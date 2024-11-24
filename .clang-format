@@ -1,0 +1,22 @@
+---
+BasedOnStyle: LLVM
+---
+Language: Cpp
+AlignConsecutiveAssignments:
+  Enabled: false
+AlignConsecutiveBitFields:
+  Enabled: true
+AlignConsecutiveDeclarations:
+  Enabled: false
+AllowShortEnumsOnASingleLine: true
+AllowShortLambdasOnASingleLine: true
+CompactNamespaces: true
+FixNamespaceComments: true
+BreakBeforeBraces: Stroustrup
+# BreakBeforeBraces: Custom
+# BraceWrapping:
+#   AfterFunction: true
+ColumnLimit: 0
+InsertBraces: true
+PointerAlignment: Left
+PackConstructorInitializers: BinPack

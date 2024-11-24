@@ -1,0 +1,78 @@
+{
+    "version": 6,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 26,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "_base",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_RUNTIME_OUTPUT_DIRECTORY": "${sourceDir}/bin",
+                "FETCHCONTENT_QUIET": false,
+                "FETCHCONTENT_UPDATES_DISCONNECTED": true,
+                "FETCHCONTENT_FULLY_DISCONNECTED": true
+            }
+        },
+        {
+            "name": "debug",
+            "inherits": [
+                "_base"
+            ],
+            "displayName": "Debug With Warning",
+            "description": "Build options for my system",
+            "generator": "Unix Makefiles",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_CXX_FLAGS": "-Wall -Werror -pedantic-errors -Wextra"
+            }
+        },
+        {
+            "name": "release",
+            "inherits": [
+                "_base"
+            ],
+            "displayName": "Release",
+            "description": "Build options for my system",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "generator": "Unix Makefiles",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "multi",
+            "inherits": [
+                "_base"
+            ],
+            "displayName": "Multi Config",
+            "description": "Release and Debug using Ninja Multi-Config",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "generator": "Ninja Multi-Config",
+            "cacheVariables": {
+                "CMAKE_CONFIGURATION_TYPES": "Debug;Release",
+                "CMAKE_CXX_FLAGS": "-Wall -Werror -pedantic-errors -Wextra"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "debug",
+            "configurePreset": "debug",
+            "jobs": 16
+        },
+        {
+            "name": "multi-debug",
+            "configurePreset": "multi",
+            "configuration": "Debug",
+            "jobs": 16
+        },
+        {
+            "name": "release",
+            "configurePreset": "release",
+            "jobs": 16
+        }
+    ]
+}
