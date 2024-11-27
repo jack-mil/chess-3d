@@ -35,8 +35,25 @@ FetchContent_Declare(
     EXCLUDE_FROM_ALL ON
 )
 
-FetchContent_MakeAvailable(fmt reproc++)
+# include UCI chess moveset library (headers only)
+FetchContent_Declare(
+    chess
+    GIT_REPOSITORY https://github.com/Disservin/chess-library
+    GIT_TAG        7114fd5b26e913812055658f862971c4cd85f73b  # current master
+    GIT_SHALLOW ON
+    GIT_PROGRESS ON
+    SYSTEM ON
+    EXCLUDE_FROM_ALL ON
+    CONFIGURE_COMMAND ""    # disable configure and build (only headers to include)
+    BUILD_COMMAND ""
+)
 
+# make all source deps findable
+FetchContent_MakeAvailable(fmt reproc++ chess)
+
+# add the chess header
+add_library(chess INTERFACE)
+target_include_directories(chess SYSTEM INTERFACE "${chess_SOURCE_DIR}/include")
 
 # Add the header-only cli arg library
 add_library(clipp INTERFACE)
@@ -45,5 +62,7 @@ target_include_directories(clipp SYSTEM INTERFACE "external/")
 
 
 add_executable(${PROJECT_NAME} src/main.cpp)
-target_link_libraries(${PROJECT_NAME} PRIVATE clipp fmt::fmt reproc++)
+target_link_libraries(${PROJECT_NAME} PRIVATE chess clipp fmt::fmt reproc++)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
+
+add_subdirectory(examples/)

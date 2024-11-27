@@ -12,8 +12,7 @@
             "cacheVariables": {
                 "CMAKE_RUNTIME_OUTPUT_DIRECTORY": "${sourceDir}/bin",
                 "FETCHCONTENT_QUIET": false,
-                "FETCHCONTENT_UPDATES_DISCONNECTED": true,
-                "FETCHCONTENT_FULLY_DISCONNECTED": true
+                "FETCHCONTENT_UPDATES_DISCONNECTED": true
             }
         },
         {
@@ -25,8 +24,7 @@
             "description": "Build options for my system",
             "generator": "Unix Makefiles",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug",
-                "CMAKE_CXX_FLAGS": "-Wall -Werror -pedantic-errors -Wextra"
+                "CMAKE_BUILD_TYPE": "Debug"
             }
         },
         {
@@ -36,7 +34,6 @@
             ],
             "displayName": "Release",
             "description": "Build options for my system",
-            "binaryDir": "${sourceDir}/build/${presetName}",
             "generator": "Unix Makefiles",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release"
@@ -49,11 +46,12 @@
             ],
             "displayName": "Multi Config",
             "description": "Release and Debug using Ninja Multi-Config",
-            "binaryDir": "${sourceDir}/build/${presetName}",
             "generator": "Ninja Multi-Config",
             "cacheVariables": {
                 "CMAKE_CONFIGURATION_TYPES": "Debug;Release",
-                "CMAKE_CXX_FLAGS": "-Wall -Werror -pedantic-errors -Wextra"
+                "CMAKE_CXX_FLAGS": "-Wall -pedantic-errors -Wextra -march=native -mtune=native -O2",
+                "CMAKE_COMPILE_WARNING_AS_ERROR": true,
+                "FETCHCONTENT_FULLY_DISCONNECTED": true
             }
         }
     ],
