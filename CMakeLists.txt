@@ -36,6 +36,8 @@ FetchContent_Declare(
 )
 
 # include UCI chess moveset library (headers only)
+# not a CMakeProject, see: 
+# https://cmake.org/cmake/help/latest/module/ExternalProject.html#configure-step-options
 FetchContent_Declare(
     chess
     GIT_REPOSITORY https://github.com/Disservin/chess-library
@@ -45,7 +47,7 @@ FetchContent_Declare(
     SYSTEM ON
     EXCLUDE_FROM_ALL ON
     CONFIGURE_COMMAND ""    # disable configure and build (only headers to include)
-    BUILD_COMMAND ""
+    BUILD_COMMAND ""        
 )
 
 # make all source deps findable
@@ -59,6 +61,11 @@ target_include_directories(chess SYSTEM INTERFACE "${chess_SOURCE_DIR}/include")
 add_library(clipp INTERFACE)
 # SYSTEM keyword prevents warnings from external libraries
 target_include_directories(clipp SYSTEM INTERFACE "external/")
+
+# Find the Ogre library installed on system through pacman
+# The COMPONENTS part checks that OGRE was built the way we need it
+# The CONFIG flag makes sure we get OGRE instead of OGRE-next
+find_package(OGRE REQUIRED COMPONENTS Bites CONFIG)
 
 
 add_executable(${PROJECT_NAME} src/main.cpp)
