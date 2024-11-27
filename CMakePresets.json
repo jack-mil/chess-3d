@@ -49,7 +49,7 @@
             "generator": "Ninja Multi-Config",
             "cacheVariables": {
                 "CMAKE_CONFIGURATION_TYPES": "Debug;Release",
-                "CMAKE_CXX_FLAGS": "-Wall -pedantic-errors -Wextra -march=native -mtune=native -O2",
+                "CMAKE_CXX_FLAGS": "-Wall -pedantic-errors -Wextra -march=native -mtune=native",
                 "CMAKE_CXX_COMPILER_LAUNCHER": "ccache",
                 "CMAKE_LINKER_TYPE": "MOLD",
                 "CMAKE_COMPILE_WARNING_AS_ERROR": true,

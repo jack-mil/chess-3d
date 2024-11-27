@@ -1,5 +1,5 @@
 # Minimum CMake version required
-cmake_minimum_required(VERSION 3.26)
+cmake_minimum_required(VERSION 3.28)
 
 project(
     chess3d
@@ -35,6 +35,17 @@ FetchContent_Declare(
     EXCLUDE_FROM_ALL ON
 )
 
+# Add cli arg library clipp (single header)
+FetchContent_Declare(
+    clipp
+    GIT_REPOSITORY https://github.com/muellan/clipp/
+    GIT_TAG        2c32b2f1f7cc530b1ec1f62c92f698643bb368db  # current master (unreleased)
+    GIT_SHALLOW ON
+    GIT_PROGRESS ON
+    SYSTEM ON
+    EXCLUDE_FROM_ALL ON
+)
+
 # include UCI chess moveset library (headers only)
 # not a CMakeProject, see: 
 # https://cmake.org/cmake/help/latest/module/ExternalProject.html#configure-step-options
@@ -47,20 +58,16 @@ FetchContent_Declare(
     SYSTEM ON
     EXCLUDE_FROM_ALL ON
     CONFIGURE_COMMAND ""    # disable configure and build (only headers to include)
-    BUILD_COMMAND ""        
+    BUILD_COMMAND ""        # not a CMake project
 )
 
-# make all source deps findable
-FetchContent_MakeAvailable(fmt reproc++ chess)
+# make all library deps linkable
+FetchContent_MakeAvailable(fmt reproc++ clipp chess)
 
-# add the chess header
+# add the chess header manully
+# because it's not a CMake project
 add_library(chess INTERFACE)
 target_include_directories(chess SYSTEM INTERFACE "${chess_SOURCE_DIR}/include")
-
-# Add the header-only cli arg library
-add_library(clipp INTERFACE)
-# SYSTEM keyword prevents warnings from external libraries
-target_include_directories(clipp SYSTEM INTERFACE "external/")
 
 # Find the Ogre library installed on system through pacman
 # The COMPONENTS part checks that OGRE was built the way we need it
@@ -69,7 +76,7 @@ find_package(OGRE REQUIRED COMPONENTS Bites CONFIG)
 
 
 add_executable(${PROJECT_NAME} src/main.cpp)
-target_link_libraries(${PROJECT_NAME} PRIVATE chess clipp fmt::fmt reproc++)
+target_link_libraries(${PROJECT_NAME} PRIVATE chess clipp fmt::fmt reproc++ OgreBites)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
 add_subdirectory(examples/)
