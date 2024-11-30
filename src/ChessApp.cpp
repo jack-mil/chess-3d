@@ -40,40 +40,38 @@
 #include "OgreRoot.h"
 
 #include "ChessApp.hpp"
+#include "overlayGUI.hpp"
 
-using namespace Ogre;
-using namespace OgreBites;
+using namespace chess3d;
 
 ChessApplication::ChessApplication()
-    : ApplicationContext("Chess 3D!")
-{
+    : OgreBites::ApplicationContext("Chess 3D!") {
   std::cout << "Constructed\n";
+  m_ui = new Overlay();
 }
 
-ChessApplication::~ChessApplication()
-{
+ChessApplication::~ChessApplication() {
   std::cout << "Trying destory\n";
   // std::cout << "Deleting" << mCtrls << "\n";
   // delete mCtrls;
   // std::cout << "Deleting" << mTrayMgr << "\n";
   // delete mTrayMgr;
+  delete m_ui;
   delete mCamMan;
   std::cout << "Destructed\n";
 }
 
-void ChessApplication::exec()
-{
+void ChessApplication::exec() {
   this->initApp();
   this->getRoot()->startRendering();
   this->closeApp();
 }
 
-void ChessApplication::loadResources()
-{
+void ChessApplication::loadResources() {
   std::cout << "Loading Resources\n";
   enableShaderCache();
 
-  auto resourceMgr = ResourceGroupManager::getSingletonPtr();
+  auto resourceMgr = Ogre::ResourceGroupManager::getSingletonPtr();
 
   // load essential resources for trays/ loading bar
   // createDummyScene();
@@ -95,11 +93,12 @@ void ChessApplication::loadResources()
   std::cout << "Loading Resources Done\n";
 }
 
-void ChessApplication::setup()
-{
-  std::cout << "Settings up\n";
+void ChessApplication::setup() {
+  using namespace Ogre;
+
+  std::cout << "Setting up\n";
   // do not forget to call the base first
-  ApplicationContext::setup();
+  OgreBites::ApplicationContext::setup();
 
   // get a pointer to the already created root
   Root* root = getRoot();
@@ -124,6 +123,8 @@ void ChessApplication::setup()
   // Ogre::OverlayManager::getSingleton().setPixelRatio(vpScale);
   scnMgr->addRenderQueueListener(getOverlaySystem());
   auto imGUIOverlay = initialiseImGui();
+  ImGuiIO& io = ImGui::GetIO();
+  io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
   // ImGui::GetIO().FontGlobalScale = std::round(vpScale);
   imGUIOverlay->show();
   getRenderWindow()->addListener(this);
@@ -133,13 +134,13 @@ void ChessApplication::setup()
   // (named node loaded from the .scene)
   // camera manager (movement) from python example
   SceneNode* camNode = scnMgr->getSceneNode("cam1");
-  mCamMan = new CameraMan(camNode);
-  mCamMan->setStyle(CS_ORBIT);
+  mCamMan = new OgreBites::CameraMan(camNode);
+  mCamMan->setStyle(OgreBites::CS_ORBIT);
   Camera* cam = scnMgr->getCamera("cam1");
   cam->setAutoAspectRatio(true);
 
-  // Add the input listeners in order so input is consumed by imgui overlay
-  auto inputChain = new InputListenerChain({getImGuiInputListener(), mCamMan, this});
+  // Add the input listeners in order
+  auto inputChain = new OgreBites::InputListenerChain({this, getImGuiInputListener(), mCamMan});
   addInputListener(inputChain); // takes ownership
   // Extra debug controls
   // see: https://ogrecave.github.io/ogre/api/latest/class_ogre_bites_1_1_advanced_render_controls.html
@@ -224,37 +225,25 @@ void ChessApplication::setup()
   std::cout << "Setting up Done\n";
 }
 
-void ChessApplication::preViewportUpdate(const Ogre::RenderTargetViewportEvent& /* evt */)
-{
-  // bool saveConfig;
-  auto stats = getRenderWindow()->getStatistics();
-  Ogre::ImGuiOverlay::NewFrame();
+// Called once a frame, updates the ImGUI UI
+void ChessApplication::preViewportUpdate(const Ogre::RenderTargetViewportEvent& /* evt */) {
 
-  ImGui::ShowDemoWindow();
-  // auto flags = ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse |
-  //              ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoMove;
-  // auto center = ImGui::GetMainViewport()->GetCenter();
-  // ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-  // ImGui::Begin("Rendering Settings", NULL, flags);
-  // // Ogre::DrawRenderingSettings(nextRenderer);
-  // ImGui::Text("fps: %f", stats.avgFPS);
-  // ImGui::Separator();
-  // if (ImGui::Button("Accept")) {
-  //   // Ogre::Root::getSingleton().queueEndRendering();
-  //   // saveConfig = true;
-  // }
-  // ImGui::SameLine();
-  // if (ImGui::Button("Cancel")) {
-  //   // saveConfig = false;
-  //   // Ogre::Root::getSingleton().queueEndRendering();
-  // }
-  // ImGui::End();
+  Ogre::ImGuiOverlay::NewFrame();
+  m_ui->draw();
 }
 
-bool ChessApplication::keyPressed(const KeyboardEvent& evt)
-{
+bool ChessApplication::keyPressed(const OgreBites::KeyboardEvent& evt) {
+  using namespace OgreBites;
   if (evt.keysym.sym == SDLK_ESCAPE) {
     getRoot()->queueEndRendering();
+    return true;
+  } else if (evt.keysym.sym == SDLK_F2) {
+    m_ui->toggleShow();
+    return true;
+  } else if (evt.keysym.sym == SDLK_F12) {
+    m_ui->toggleDebug();
+    return true;
   }
-  return true;
+
+  return false;
 }

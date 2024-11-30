@@ -38,7 +38,7 @@ static void log_err(std::string msg, T&&... args)
 int main(/* int argc, char **argv */)
 {
   try {
-    ChessApplication app;
+    chess3d::ChessApplication app;
     app.exec();
   }
   catch (const std::exception& e) {

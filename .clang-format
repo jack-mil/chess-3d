@@ -10,10 +10,12 @@ AlignConsecutiveDeclarations:
   Enabled: false
 AllowShortEnumsOnASingleLine: true
 AllowShortLambdasOnASingleLine: true
+AllowShortBlocksOnASingleLine: Always
+AllowShortIfStatementsOnASingleLine: AllIfsAndElse
 CompactNamespaces: true
 FixNamespaceComments: true
-BreakBeforeBraces: Stroustrup
-# BreakBeforeBraces: Custom
+# BreakBeforeBraces: Stroustrup
+BreakBeforeBraces: Custom
 # BraceWrapping:
 #   AfterFunction: true
 ColumnLimit: 0
