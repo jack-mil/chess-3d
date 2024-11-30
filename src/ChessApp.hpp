@@ -1,31 +1,28 @@
-#include "Ogre.h"
 #include "OgreApplicationContext.h"
-#include "OgreCameraMan.h"
 #include "OgreInput.h"
-#include "OgreRTShaderSystem.h"
-#include "OgreTrays.h"
-#include "OgreAdvancedRenderControls.h"
-#include "OgreImGuiOverlay.h"
+#include "OgreRenderTargetListener.h"
 
-
-using namespace Ogre;
-using namespace OgreBites;
+namespace OgreBites {
+class CameraMan;
+}
 
 class ChessApplication
-    : public ApplicationContext,
-      public InputListener,
-      public RenderTargetListener {
+    : public OgreBites::ApplicationContext,
+      public OgreBites::InputListener,
+      public Ogre::RenderTargetListener {
 public:
   ChessApplication();
   virtual ~ChessApplication();
 
   void setup() override;
   void loadResources() override;
-  bool keyPressed(const KeyboardEvent& evt) override;
+  bool keyPressed(const OgreBites::KeyboardEvent& evt) override;
   void preViewportUpdate(const Ogre::RenderTargetViewportEvent& evt) override;
 
+  void exec();
+
 private:
-  TrayManager* mTrayMgr = nullptr;
-  CameraMan* mCamMan = nullptr;
-  AdvancedRenderControls* mCtrls = nullptr;
+  // TrayManager* mTrayMgr = nullptr;
+  OgreBites::CameraMan* mCamMan = nullptr;
+  // AdvancedRenderControls* mCtrls = nullptr;
 };

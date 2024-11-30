@@ -1,10 +1,10 @@
 #include <fmt/base.h>
 #include <fmt/color.h>
 
-#include "chessEngine.hpp"
 #include "ChessApp.hpp"
+#include "chessEngine.hpp"
 
-template <typename ... T>
+template <typename... T>
 static void log_err(std::string msg, T&&... args)
 {
   fmt::print(stderr, fmt::emphasis::bold | fg(fmt::terminal_color::red), "{}\n", fmt::format(msg, args...));
@@ -31,7 +31,7 @@ static void log_err(std::string msg, T&&... args)
 //   // engine.makeEngineMove(aiMove);
 //   // log_info(aiMove);
 //   // fmt::println(engine.getBoardString());
-  
+
 //   return 0;
 
 // }
@@ -39,9 +39,7 @@ int main(/* int argc, char **argv */)
 {
   try {
     ChessApplication app;
-    app.initApp();
-    app.getRoot()->startRendering();
-    app.closeApp();
+    app.exec();
   }
   catch (const std::exception& e) {
     log_err("Error occurred during execution: {}", e.what());

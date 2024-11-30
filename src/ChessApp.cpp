@@ -28,8 +28,16 @@
 
 */
 
-#include <exception>
+// #include <exception>
 #include <iostream>
+
+#include "OgreAdvancedRenderControls.h"
+#include "OgreCameraMan.h"
+#include "OgreImGuiOverlay.h"
+#include "OgreOverlaySystem.h"
+#include "OgreRTShaderSystem.h"
+#include "OgreRenderWindow.h"
+#include "OgreRoot.h"
 
 #include "ChessApp.hpp"
 
@@ -51,6 +59,13 @@ ChessApplication::~ChessApplication()
   // delete mTrayMgr;
   delete mCamMan;
   std::cout << "Destructed\n";
+}
+
+void ChessApplication::exec()
+{
+  this->initApp();
+  this->getRoot()->startRendering();
+  this->closeApp();
 }
 
 void ChessApplication::loadResources()
