@@ -2,7 +2,7 @@
 // With addition from the python example @
 // https://github.com/OGRECave/ogre/blob/v1.11.1/Samples/Python/bites_sample.py#L23
 
-/* Controls: 
+/* Controls:
 
     LMB: Orbit Camera
     RMB: Pan Camera
@@ -27,7 +27,6 @@
 
 
 */
-
 
 #include <exception>
 #include <iostream>
@@ -61,7 +60,6 @@ void ChessApplication::loadResources()
 
   auto resourceMgr = ResourceGroupManager::getSingletonPtr();
 
-
   // load essential resources for trays/ loading bar
   resourceMgr->initialiseResourceGroup("Essential");
   createDummyScene();
@@ -72,6 +70,7 @@ void ChessApplication::loadResources()
   mTrayMgr->showLoadingBar(1, 0);
   resourceMgr->initialiseResourceGroup("OgreInternal"); // for shadow lighting...?
   resourceMgr->addResourceLocation("./resources", "FileSystem", "ChessGroup");
+  resourceMgr->initialiseResourceGroup("General");
   resourceMgr->initialiseResourceGroup("ChessGroup");
   resourceMgr->setWorldResourceGroupName("ChessGroup");
 
@@ -96,6 +95,10 @@ void ChessApplication::setup()
   RTShader::ShaderGenerator* shadergen = RTShader::ShaderGenerator::getSingletonPtr();
   shadergen->addSceneManager(scnMgr); // must be done before we do anything with the scene
 
+  // load the entire chess scene and all objects (exported from Blender)
+  auto sceneOrigin = scnMgr->getRootSceneNode()->createChildSceneNode();
+  sceneOrigin->loadChildren("chess.scene");
+
   // overlay/ trays
   scnMgr->addRenderQueueListener(getOverlaySystem());
   mTrayMgr->showFrameStats(TrayLocation::TL_TOPLEFT);
@@ -103,43 +106,37 @@ void ChessApplication::setup()
   mTrayMgr->toggleAdvancedFrameStats();
   mTrayMgr->refreshCursor();
 
-  
-  // -- tutorial section start --
-  SceneNode* camNode = scnMgr->getRootSceneNode()->createChildSceneNode();
-  Camera* cam = scnMgr->createCamera("myCam");
-
-
+  // attach the user input controls to the camera node
+  // (named node loaded from the .scene)
   // camera manager (movement) from python example
+  SceneNode* camNode = scnMgr->getSceneNode("cam1");
   mCamMan = new CameraMan(camNode);
   mCamMan->setStyle(CS_ORBIT);
-  // mCamMan->setYawPitchDist(Radian(0), Radian(0.3), 100);
   addInputListener(mCamMan);
-
-  camNode->setPosition(0, 8, 12);
-  camNode->lookAt(Vector3(0, 0, 0), Node::TransformSpace::TS_WORLD);
-
-  cam->setNearClipDistance(5);
-  cam->setAutoAspectRatio(true);
-  camNode->attachObject(cam);
-
   // Extra debug controls
   // see: https://ogrecave.github.io/ogre/api/latest/class_ogre_bites_1_1_advanced_render_controls.html
+  Camera* cam = scnMgr->getCamera("cam1");
+  cam->setAutoAspectRatio(true);
+  
   mCtrls = new AdvancedRenderControls(mTrayMgr, cam);
   addInputListener(mCtrls); // takes ownership
 
+  // Set render target to this camera output
   Viewport* vp = getRenderWindow()->addViewport(cam);
+  vp->setBackgroundColour(ColourValue(0.2, 0.2, 0.2));
+  // mCamMan->setYawPitchDist(Radian(0), Radian(0.3), 100);
+  // SceneNode* camNode = scnMgr->getRootSceneNode()->createChildSceneNode();
+  // Camera* cam = scnMgr->createCamera("myCam");
 
-  vp->setBackgroundColour(ColourValue(0.3, 0, 0.3));
+  // camNode->setPosition(0, 8, 12);
+  // camNode->lookAt(Vector3(0, 0, 0), Node::TransformSpace::TS_WORLD);
 
   // cam->setAspectRatio(Real(vp->getActualWidth()) / Real(vp->getActualHeight()));
+  // cam->setNearClipDistance(5);
+  // camNode->attachObject(cam);
 
   scnMgr->setAmbientLight(ColourValue(0.2, 0.2, 0.2));
   scnMgr->setShadowTechnique(ShadowTechnique::SHADOWTYPE_STENCIL_ADDITIVE);
-
-  auto sceneOrigin = scnMgr->getRootSceneNode()->createChildSceneNode();
-
-  // load the entire chess scene and all objects (exported from Blender)
-  sceneOrigin->loadChildren("chess.scene");
 
   // Entity* ninjaEntity = scnMgr->createEntity("ninja.mesh");
   // ninjaEntity->setCastShadows(true);
@@ -161,31 +158,33 @@ void ChessApplication::setup()
 
   // groundEntity->setCastShadows(false);
 
-  // groundEntity->setMaterialName("Examples/Rockwall");
+  // auto* boardEntity = scnMgr->getEntity("board");
+  // boardEntity->setMaterialName("Examples/Rockwall");
 
-  // Light* spotLight = scnMgr->createLight("SpotLight");
+  // Light* spotLight = scnMgr->createLight("spot2");
 
-  // spotLight->setDiffuseColour(0, 0, 1.0);
-  // spotLight->setSpecularColour(0, 0, 1.0);
+  // spotLight->setDiffuseColour(0.9, 0.9, 0.9);
+  // spotLight->setSpecularColour(0.9, 0.90, 0.9);
 
   // spotLight->setType(Light::LT_SPOTLIGHT);
+  // spotLight->setSpotlightRange(Degree(90), Degree(110));
 
   // SceneNode* spotLightNode = scnMgr->getRootSceneNode()->createChildSceneNode();
   // spotLightNode->attachObject(spotLight);
-  // spotLightNode->setDirection(-1, -1, 0);
-  // spotLightNode->setPosition(Vector3(200, 200, 0));
+  // spotLightNode->setDirection(0, -1, 0);
+  // spotLightNode->setPosition(Vector3(0, 5.75, 0));
 
-  // spotLight->setSpotlightRange(Degree(35), Degree(50));
+  // Light* area1 = scnMgr->createLight("DirectionalLight");
+  // area1->setType(Light::LT_RECTLIGHT);
 
-  // Light* directionalLight = scnMgr->createLight("DirectionalLight");
-  // directionalLight->setType(Light::LT_DIRECTIONAL);
+  // // area1->setSourceSize()
 
-  // directionalLight->setDiffuseColour(ColourValue(0.4, 0, 0));
-  // directionalLight->setSpecularColour(ColourValue(0.4, 0, 0));
+  // // directionalLight->setDiffuseColour(ColourValue(0.4, 0, 0));
+  // // directionalLight->setSpecularColour(ColourValue(0.4, 0, 0));
 
-  // SceneNode* directionalLightNode = scnMgr->getRootSceneNode()->createChildSceneNode();
-  // directionalLightNode->attachObject(directionalLight);
-  // directionalLightNode->setDirection(Vector3(0, -1, 1));
+  // SceneNode* area1Node = scnMgr->getRootSceneNode()->createChildSceneNode();
+  // area1Node->attachObject(area1);
+  // area1Node->setDirection(Vector3(0, -1, 1));
 
   // Light* pointLight = scnMgr->createLight("PointLight");
   // pointLight->setType(Light::LT_POINT);
@@ -195,8 +194,8 @@ void ChessApplication::setup()
 
   // SceneNode* pointLightNode = scnMgr->getRootSceneNode()->createChildSceneNode();
   // pointLightNode->attachObject(pointLight);
-  // pointLightNode->setPosition(Vector3(0, 150, 250));
-  // -- tutorial section end --
+  // pointLightNode->setPosition(Vector3(11, 8.6, 0.295));
+
   std::cout << "Setting up Done\n";
 }
 
