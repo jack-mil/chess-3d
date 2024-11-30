@@ -59,10 +59,20 @@ FetchContent_Declare(
     EXCLUDE_FROM_ALL ON
     CONFIGURE_COMMAND ""    # disable configure and build (only headers to include)
     BUILD_COMMAND ""        # not a CMake project
+    )
+    
+FetchContent_Declare(
+    uciadapter
+    GIT_REPOSITORY https://gitlab.com/manzerbredes/uciadapter.git
+    GIT_TAG        4c73c57b9ee0c12a6dc423b663753f4b812a8b10  # current master
+    GIT_SHALLOW ON
+    GIT_PROGRESS ON
+    SYSTEM ON
+    EXCLUDE_FROM_ALL ON
 )
 
 # make all library deps linkable
-FetchContent_MakeAvailable(fmt reproc++ clipp chess)
+FetchContent_MakeAvailable(fmt reproc++ clipp chess uciadapter)
 
 # add the chess header manully
 # because it's not a CMake project
@@ -75,8 +85,8 @@ target_include_directories(chess SYSTEM INTERFACE "${chess_SOURCE_DIR}/include")
 find_package(OGRE REQUIRED COMPONENTS Bites CONFIG)
 
 
-add_executable(${PROJECT_NAME} src/main.cpp)
-target_link_libraries(${PROJECT_NAME} PRIVATE chess clipp fmt::fmt reproc++ OgreBites)
+add_executable(${PROJECT_NAME} src/main.cpp src/chessEngine.cpp)
+target_link_libraries(${PROJECT_NAME} PRIVATE uciadapter chess clipp fmt::fmt reproc++ OgreBites)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
 add_subdirectory(examples/)
