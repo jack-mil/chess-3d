@@ -61,13 +61,13 @@ void ChessApplication::loadResources()
   auto resourceMgr = ResourceGroupManager::getSingletonPtr();
 
   // load essential resources for trays/ loading bar
+  // createDummyScene();
   resourceMgr->initialiseResourceGroup("Essential");
-  createDummyScene();
-  mTrayMgr = new OgreBites::TrayManager("Iterface", getRenderWindow());
-  addInputListener(mTrayMgr); // takes ownership
+  // mTrayMgr = new OgreBites::TrayManager("Iterface", getRenderWindow());
+  // addInputListener(mTrayMgr); // takes ownership
 
   // show loading progress
-  mTrayMgr->showLoadingBar(1, 0);
+  // mTrayMgr->showLoadingBar(3, 3);
   resourceMgr->initialiseResourceGroup("OgreInternal"); // for shadow lighting...?
   resourceMgr->addResourceLocation("./resources", "FileSystem", "ChessGroup");
   resourceMgr->initialiseResourceGroup("General");
@@ -75,8 +75,8 @@ void ChessApplication::loadResources()
   resourceMgr->setWorldResourceGroupName("ChessGroup");
 
   // # clean up
-  mTrayMgr->hideLoadingBar();
-  destroyDummyScene();
+  // mTrayMgr->hideLoadingBar();
+  // destroyDummyScene();
   std::cout << "Loading Resources Done\n";
 }
 
@@ -100,11 +100,22 @@ void ChessApplication::setup()
   sceneOrigin->loadChildren("chess.scene");
 
   // overlay/ trays
+  // mTrayMgr->showFrameStats(TrayLocation::TL_TOPLEFT);
+  // mTrayMgr->hideCursor();
+  // mTrayMgr->toggleAdvancedFrameStats();
+  // mTrayMgr->refreshCursor();
+
+
+  // imgui overlay
+  // float vpScale = getDisplayDPI()/96;
+  // Ogre::OverlayManager::getSingleton().setPixelRatio(vpScale);
   scnMgr->addRenderQueueListener(getOverlaySystem());
-  mTrayMgr->showFrameStats(TrayLocation::TL_TOPLEFT);
-  mTrayMgr->hideCursor();
-  mTrayMgr->toggleAdvancedFrameStats();
-  mTrayMgr->refreshCursor();
+  auto imGUIOverlay = initialiseImGui();
+  // ImGui::GetIO().FontGlobalScale = std::round(vpScale);
+  imGUIOverlay->show();
+  addInputListener(getImGuiInputListener());
+  getRenderWindow()->addListener(this);
+  // getRoot()->addFrameListener(&mChessDialog);
 
   // attach the user input controls to the camera node
   // (named node loaded from the .scene)
@@ -113,13 +124,13 @@ void ChessApplication::setup()
   mCamMan = new CameraMan(camNode);
   mCamMan->setStyle(CS_ORBIT);
   addInputListener(mCamMan);
-  // Extra debug controls
-  // see: https://ogrecave.github.io/ogre/api/latest/class_ogre_bites_1_1_advanced_render_controls.html
   Camera* cam = scnMgr->getCamera("cam1");
   cam->setAutoAspectRatio(true);
   
-  mCtrls = new AdvancedRenderControls(mTrayMgr, cam);
-  addInputListener(mCtrls); // takes ownership
+  // Extra debug controls
+  // see: https://ogrecave.github.io/ogre/api/latest/class_ogre_bites_1_1_advanced_render_controls.html
+  // mCtrls = new AdvancedRenderControls(mTrayMgr, cam);
+  // addInputListener(mCtrls); // takes ownership
 
   // Set render target to this camera output
   Viewport* vp = getRenderWindow()->addViewport(cam);
@@ -197,6 +208,33 @@ void ChessApplication::setup()
   // pointLightNode->setPosition(Vector3(11, 8.6, 0.295));
 
   std::cout << "Setting up Done\n";
+}
+
+void ChessApplication::preViewportUpdate(const Ogre::RenderTargetViewportEvent& /* evt */)
+{
+  // bool saveConfig;
+  auto stats = getRenderWindow()->getStatistics();
+  Ogre::ImGuiOverlay::NewFrame();
+
+  ImGui::ShowDemoWindow();
+  // auto flags = ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse |
+  //              ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoMove;
+  // auto center = ImGui::GetMainViewport()->GetCenter();
+  // ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+  // ImGui::Begin("Rendering Settings", NULL, flags);
+  // // Ogre::DrawRenderingSettings(nextRenderer);
+  // ImGui::Text("fps: %f", stats.avgFPS);
+  // ImGui::Separator();
+  // if (ImGui::Button("Accept")) {
+  //   // Ogre::Root::getSingleton().queueEndRendering();
+  //   // saveConfig = true;
+  // }
+  // ImGui::SameLine();
+  // if (ImGui::Button("Cancel")) {
+  //   // saveConfig = false;
+  //   // Ogre::Root::getSingleton().queueEndRendering();
+  // }
+  // ImGui::End();
 }
 
 bool ChessApplication::keyPressed(const KeyboardEvent& evt)

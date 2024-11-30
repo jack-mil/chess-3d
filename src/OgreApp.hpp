@@ -4,23 +4,25 @@
 #include "OgreInput.h"
 #include "OgreRTShaderSystem.h"
 #include "OgreTrays.h"
-#include "OgreImGuiOverlay.h"
-#include "OgreImGuiInputListener.h"
 #include "OgreAdvancedRenderControls.h"
+#include "OgreImGuiOverlay.h"
+
 
 using namespace Ogre;
 using namespace OgreBites;
 
 class ChessApplication
     : public ApplicationContext,
-      public InputListener {
+      public InputListener,
+      public RenderTargetListener {
 public:
   ChessApplication();
   virtual ~ChessApplication();
 
-  void setup();
-  void loadResources();
-  bool keyPressed(const KeyboardEvent& evt);
+  void setup() override;
+  void loadResources() override;
+  bool keyPressed(const KeyboardEvent& evt) override;
+  void preViewportUpdate(const Ogre::RenderTargetViewportEvent& evt) override;
 
 private:
   TrayManager* mTrayMgr = nullptr;
