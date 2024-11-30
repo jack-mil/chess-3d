@@ -85,7 +85,7 @@ target_include_directories(chess SYSTEM INTERFACE "${chess_SOURCE_DIR}/include")
 find_package(OGRE REQUIRED COMPONENTS Bites CONFIG)
 
 
-add_executable(${PROJECT_NAME} src/main.cpp src/chessEngine.cpp src/OgreApp.cpp src/UIOverlay.cpp)
+add_executable(${PROJECT_NAME} src/main.cpp src/chessEngine.cpp src/ChessApp.cpp src/UIOverlay.cpp)
 target_link_libraries(${PROJECT_NAME} PRIVATE uciadapter chess clipp fmt::fmt reproc++ OgreBites)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 

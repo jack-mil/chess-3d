@@ -2,7 +2,7 @@
 #include <fmt/color.h>
 
 #include "chessEngine.hpp"
-#include "OgreApp.hpp"
+#include "ChessApp.hpp"
 
 template <typename ... T>
 static void log_err(std::string msg, T&&... args)

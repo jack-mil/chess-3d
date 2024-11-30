@@ -31,7 +31,7 @@
 #include <exception>
 #include <iostream>
 
-#include "OgreApp.hpp"
+#include "ChessApp.hpp"
 
 using namespace Ogre;
 using namespace OgreBites;
@@ -85,7 +85,6 @@ void ChessApplication::setup()
   std::cout << "Settings up\n";
   // do not forget to call the base first
   ApplicationContext::setup();
-  addInputListener(this);
 
   // get a pointer to the already created root
   Root* root = getRoot();
@@ -105,7 +104,6 @@ void ChessApplication::setup()
   // mTrayMgr->toggleAdvancedFrameStats();
   // mTrayMgr->refreshCursor();
 
-
   // imgui overlay
   // float vpScale = getDisplayDPI()/96;
   // Ogre::OverlayManager::getSingleton().setPixelRatio(vpScale);
@@ -113,7 +111,6 @@ void ChessApplication::setup()
   auto imGUIOverlay = initialiseImGui();
   // ImGui::GetIO().FontGlobalScale = std::round(vpScale);
   imGUIOverlay->show();
-  addInputListener(getImGuiInputListener());
   getRenderWindow()->addListener(this);
   // getRoot()->addFrameListener(&mChessDialog);
 
@@ -123,10 +120,12 @@ void ChessApplication::setup()
   SceneNode* camNode = scnMgr->getSceneNode("cam1");
   mCamMan = new CameraMan(camNode);
   mCamMan->setStyle(CS_ORBIT);
-  addInputListener(mCamMan);
   Camera* cam = scnMgr->getCamera("cam1");
   cam->setAutoAspectRatio(true);
-  
+
+  // Add the input listeners in order so input is consumed by imgui overlay
+  auto inputChain = new InputListenerChain({getImGuiInputListener(), mCamMan, this});
+  addInputListener(inputChain); // takes ownership
   // Extra debug controls
   // see: https://ogrecave.github.io/ogre/api/latest/class_ogre_bites_1_1_advanced_render_controls.html
   // mCtrls = new AdvancedRenderControls(mTrayMgr, cam);
