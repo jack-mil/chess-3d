@@ -1,6 +1,8 @@
 #pragma once
 
-#include "imgui.h"
+#include <imgui.h> // included with Ogre
+
+#include "engine.hpp"
 
 namespace chess3d {
 
@@ -29,6 +31,9 @@ private:
 
   bool m_open = true;
   bool m_demo = false;
+  /** Text feed of player and engine moves */
   Console* m_console = nullptr;
+  /** Chess game state and stockfish connection */
+  Engine m_engine;
 };
 } // namespace chess3d

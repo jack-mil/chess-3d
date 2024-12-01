@@ -39,8 +39,8 @@
 #include "OgreRenderWindow.h"
 #include "OgreRoot.h"
 
-#include "ChessApp.hpp"
-#include "overlayGUI.hpp"
+#include "app.hpp"
+#include "overlay.hpp"
 
 using namespace chess3d;
 
@@ -226,8 +226,10 @@ void ChessApplication::setup() {
 }
 
 // Called once a frame, updates the ImGUI UI
-void ChessApplication::preViewportUpdate(const Ogre::RenderTargetViewportEvent& /* evt */) {
-
+void ChessApplication::preViewportUpdate(const Ogre::RenderTargetViewportEvent& evt) {
+  if (!evt.source->getOverlaysEnabled()) {
+    return;
+  }
   Ogre::ImGuiOverlay::NewFrame();
   m_ui->draw();
 }

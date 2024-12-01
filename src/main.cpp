@@ -1,8 +1,7 @@
 #include <fmt/base.h>
 #include <fmt/color.h>
 
-#include "ChessApp.hpp"
-#include "chessEngine.hpp"
+#include "app.hpp"
 
 template <typename... T>
 static void log_err(std::string msg, T&&... args)

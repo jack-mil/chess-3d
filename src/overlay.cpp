@@ -2,9 +2,7 @@
 // https://github.com/tsl0922/mpv-debug-plugin
 // https://github.com/ocornut/imgui/blob/master/imgui_demo.cpp#L8304
 
-#include "imgui.h"
-
-#include "overlayGUI.hpp"
+#include "overlay.hpp"
 
 // Add portable string helpers to ImGui namespace
 // from: https://github.com/ocornut/imgui/blob/master/imgui_demo.cpp#L8346
@@ -20,7 +18,7 @@ Overlay::Overlay() {
 }
 
 Overlay::~Overlay() {
-  if (m_console) { delete m_console; }
+  delete m_console;
 }
 
 void Overlay::toggleShow() { m_open = !m_open; }
@@ -92,7 +90,7 @@ void Overlay::Console::draw() {
   bool reclaim_focus = false;
   ImGuiInputTextFlags input_text_flags = ImGuiInputTextFlags_EnterReturnsTrue |
                                          ImGuiInputTextFlags_EscapeClearsAll;
-  if (ImGui::InputTextWithHint("Move", "press ENTER to execute",
+  if (ImGui::InputTextWithHint("Move", "press ENTER",
                                InputBuf, IM_ARRAYSIZE(InputBuf), input_text_flags)) {
     char* s = InputBuf;
     ImGui::Strtrim(s);

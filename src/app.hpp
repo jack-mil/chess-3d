@@ -1,3 +1,5 @@
+#pragma once
+
 #include "OgreApplicationContext.h"
 #include "OgreInput.h"
 #include "OgreRenderTargetListener.h"

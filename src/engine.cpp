@@ -1,26 +1,33 @@
 #include <iostream>
 
-#include "chessEngine.hpp"
+#include "engine.hpp"
 
-ChessEngine::ChessEngine() : m_board(chess::constants::STARTPOS)
-{
+using namespace chess3d;
+
+Engine::Engine() : m_board(chess::constants::STARTPOS) {
   m_settings.depth = 10;
+  m_engine = nullptr;
 }
 
-ChessEngine::~ChessEngine()
-{
-  if (m_engine) {
+Engine::~Engine() {
+  quitEngine();
+}
+
+bool Engine::quitEngine() {
+  if (m_engine != nullptr) {
     m_engine->quit();
     delete m_engine;
+    m_engine = nullptr;
+    return true;
   }
+  return false;
 }
 
-bool ChessEngine::initializeEngine()
-{
+bool Engine::initializeEngine() {
+  quitEngine(); // quit/kill if it is already running
   try {
     m_engine = new uciadapter::UCI("stockfish");
-  }
-  catch (const std::exception& e) {
+  } catch (const std::exception& e) {
     std::cerr << e.what() << '\n';
     return false;
   }
@@ -33,8 +40,7 @@ bool ChessEngine::initializeEngine()
   return true;
 }
 
-bool ChessEngine::makePlayerMove(const std::string& move)
-{
+bool Engine::makePlayerMove(const std::string& move) {
   auto validMove = chess::uci::uciToMove(m_board, move);
   if (validMove == chess::Move::NO_MOVE) {
     return false;
@@ -43,8 +49,7 @@ bool ChessEngine::makePlayerMove(const std::string& move)
   return true;
 }
 
-bool ChessEngine::makeEngineMove(std::string& moveOut)
-{
+bool Engine::makeEngineMove(std::string& moveOut) {
   chess::Color side = m_board.sideToMove();
   // AI must play as black
   if (side != chess::Color::BLACK) {
@@ -67,7 +72,10 @@ bool ChessEngine::makeEngineMove(std::string& moveOut)
   return true;
 }
 
-std::string ChessEngine::getBoardString() const
-{
+std::string Engine::getBoardString() const {
   return m_board.getFen();
+}
+
+bool Engine::isRunning() const {
+  return (m_engine == nullptr);
 }
