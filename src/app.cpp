@@ -46,30 +46,30 @@
 
 using namespace chess3d;
 
-ChessApplication::ChessApplication()
+App::App()
     : OgreBites::ApplicationContext("Chess 3D!") {
   std::cout << "Constructed\n";
   m_ui = new Overlay();
 }
 
-ChessApplication::~ChessApplication() {
+App::~App() {
   std::cout << "Trying destory\n";
-  // std::cout << "Deleting" << mCtrls << "\n";
-  // delete mCtrls;
-  // std::cout << "Deleting" << mTrayMgr << "\n";
-  // delete mTrayMgr;
+  // std::cout << "Deleting" << m_ctrls << "\n";
+  // delete m_ctrls;
+  // std::cout << "Deleting" << m_trayMgr << "\n";
+  // delete m_trayMgr;
   delete m_ui;
-  delete mCamMan;
+  delete m_camMgr;
   std::cout << "Destructed\n";
 }
 
-void ChessApplication::exec() {
+void App::exec() {
   this->initApp();
   this->getRoot()->startRendering();
   this->closeApp();
 }
 
-void ChessApplication::loadResources() {
+void App::loadResources() {
   std::cout << "Loading Resources\n";
   enableShaderCache();
 
@@ -78,10 +78,10 @@ void ChessApplication::loadResources() {
   // load essential resources for trays/ loading bar
   // createDummyScene();
   resourceMgr->initialiseResourceGroup("Essential");
-  mTrayMgr = new OgreBites::TrayManager("Iterface", getRenderWindow());
+  m_trayMgr = new OgreBites::TrayManager("Iterface", getRenderWindow());
 
   // show loading progress
-  // mTrayMgr->showLoadingBar(3, 3);
+  // m_trayMgr->showLoadingBar(3, 3);
   resourceMgr->initialiseResourceGroup("OgreInternal"); // for shadow lighting...?
   resourceMgr->addResourceLocation("./resources", "FileSystem", "ChessGroup");
   resourceMgr->initialiseResourceGroup("General");
@@ -89,12 +89,12 @@ void ChessApplication::loadResources() {
   resourceMgr->setWorldResourceGroupName("ChessGroup");
 
   // # clean up
-  // mTrayMgr->hideLoadingBar();
+  // m_trayMgr->hideLoadingBar();
   // destroyDummyScene();
   std::cout << "Loading Resources Done\n";
 }
 
-void ChessApplication::setup() {
+void App::setup() {
   using namespace Ogre;
 
   std::cout << "Setting up\n";
@@ -115,9 +115,9 @@ void ChessApplication::setup() {
   sceneOrigin->loadChildren("chess.scene");
 
   // overlay/ trays
-  mTrayMgr->toggleAdvancedFrameStats();
-  mTrayMgr->hideCursor();
-  // mTrayMgr->refreshCursor();
+  m_trayMgr->toggleAdvancedFrameStats();
+  m_trayMgr->hideCursor();
+  // m_trayMgr->refreshCursor();
 
   // imgui overlay
   // float vpScale = getDisplayDPI()/96;
@@ -140,29 +140,29 @@ void ChessApplication::setup() {
   // const auto& pos = camNode->getPosition();
   // const auto& dist = (camNode->getPosition() - boardNode->_getDerivedPosition()).length();
   // const auto& q = camNode->getOrientation();
-  mCamMan = new OgreBites::CameraMan(camNode);
-  // mCamMan->setTarget(boardNode);
-  mCamMan->setStyle(OgreBites::CS_ORBIT);
+  m_camMgr = new OgreBites::CameraMan(camNode);
+  // m_camMgr->setTarget(boardNode);
+  m_camMgr->setStyle(OgreBites::CS_ORBIT);
   // camNode->setPosition(pos);
   // camNode->setOrientation(q);
 
-  // mCamMan->setFixedYaw(false);
+  // m_camMgr->setFixedYaw(false);
 
   Camera* cam = scnMgr->getCamera("cam1");
   cam->setAutoAspectRatio(true);
 
   // Extra debug controls
   // see: https://ogrecave.github.io/ogre/api/latest/class_ogre_bites_1_1_advanced_render_controls.html
-  mCtrls = new OgreBites::AdvancedRenderControls(mTrayMgr, cam);
-  // addInputListener(mCtrls); // takes ownership
+  m_ctrls = new OgreBites::AdvancedRenderControls(m_trayMgr, cam);
+  // addInputListener(m_ctrls); // takes ownership
   // Add the input listeners in order
-  auto inputChain = new OgreBites::InputListenerChain({this, mCtrls, mTrayMgr, getImGuiInputListener(), mCamMan});
+  auto inputChain = new OgreBites::InputListenerChain({this, m_ctrls, m_trayMgr, getImGuiInputListener(), m_camMgr});
   addInputListener(inputChain); // takes ownership
 
   // Set render target to this camera output
   Viewport* vp = getRenderWindow()->addViewport(cam);
   vp->setBackgroundColour(ColourValue(0.2, 0.2, 0.2));
-  // mCamMan->setYawPitchDist(Radian(0), Radian(0.3), 100);
+  // m_camMgr->setYawPitchDist(Radian(0), Radian(0.3), 100);
   // SceneNode* camNode = scnMgr->getRootSceneNode()->createChildSceneNode();
   // Camera* cam = scnMgr->createCamera("myCam");
 
@@ -238,7 +238,8 @@ void ChessApplication::setup() {
 }
 
 // Called once a frame, updates ui
-void ChessApplication::preViewportUpdate(const Ogre::RenderTargetViewportEvent& evt) {
+// RenderTargetListener override
+void App::preViewportUpdate(const Ogre::RenderTargetViewportEvent& evt) {
 
   if (!evt.source->getOverlaysEnabled()) {
     return;
@@ -249,7 +250,7 @@ void ChessApplication::preViewportUpdate(const Ogre::RenderTargetViewportEvent& 
   controlLightPosition();
 }
 
-void ChessApplication::controlLightPosition() {
+void App::controlLightPosition() {
   // From ImGui Demo ShowExampleAppSimpleOverlay
   ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize |
                                   ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing |
@@ -261,7 +262,7 @@ void ChessApplication::controlLightPosition() {
   ImVec2 work_size = viewport->WorkSize;
   ImVec2 window_pos;
   window_pos.x = (work_pos.x + work_size.x - PAD);
-  window_pos.y = (work_pos.y + PAD);  
+  window_pos.y = (work_pos.y + PAD);
   ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, ImVec2(1, 0));
   ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
   ImGui::Begin("Light Controls", NULL, window_flags);
@@ -286,7 +287,7 @@ void ChessApplication::controlLightPosition() {
     ImGui::BeginDisabled(); // read only
     ImGui::DragFloat4("(WXYZ) Rot", rot.ptr(), 0.1f, -1.0f, 1.0f, "%0.4f");
     ImGui::EndDisabled();
-    
+
     lightNode->setPosition(pos);
     light->setDiffuseColour(color);
     light->setSpecularColour(color);
@@ -295,7 +296,18 @@ void ChessApplication::controlLightPosition() {
   ImGui::End();
 }
 
-bool ChessApplication::keyPressed(const OgreBites::KeyboardEvent& evt) {
+// InputLisener override
+void App::frameRendered(const Ogre::FrameEvent& evt) {
+  // can use evt.timeSinceLastFrame for time based updates,
+  // or do fixed rate loop of some sort
+  // need to update the chess pieces (over time visually?) here.
+  // see: Samples/Character/include/SinbadCharacterController.h
+  // updateAnimations(evt.timeSinceLastFrame);
+  // updateBody(evt.timeSinceLastFrame);
+  // updateCamera(evt.timeSinceLastFrame);
+}
+// InputLisener override
+bool App::keyPressed(const OgreBites::KeyboardEvent& evt) {
   using namespace OgreBites;
   if (evt.keysym.sym == SDLK_ESCAPE) {
     getRoot()->queueEndRendering();
@@ -307,13 +319,13 @@ bool ChessApplication::keyPressed(const OgreBites::KeyboardEvent& evt) {
     m_ui->toggleDebug();
     return true;
   } else if (evt.keysym.sym == 'f') {
-    if (mTrayMgr->areFrameStatsVisible()) {
-      mTrayMgr->hideFrameStats();
+    if (m_trayMgr->areFrameStatsVisible()) {
+      m_trayMgr->hideFrameStats();
     } else {
-      mTrayMgr->showFrameStats(TrayLocation::TL_TOPRIGHT);
+      m_trayMgr->showFrameStats(TrayLocation::TL_TOPRIGHT);
     }
 
-    // mCtrls->buttonPressed
+    // m_ctrls->buttonPressed
     return true;
   }
 
