@@ -41,6 +41,7 @@
 
 #include "app.hpp"
 #include "overlay.hpp"
+#include "theme.hpp"
 
 using namespace chess3d;
 
@@ -125,6 +126,7 @@ void ChessApplication::setup() {
   auto imGUIOverlay = initialiseImGui();
   ImGuiIO& io = ImGui::GetIO();
   io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+  chess3d::setModernColors();
   // ImGui::GetIO().FontGlobalScale = std::round(vpScale);
   imGUIOverlay->show();
   getRenderWindow()->addListener(this);

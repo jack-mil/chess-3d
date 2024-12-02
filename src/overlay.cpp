@@ -14,7 +14,7 @@ static void  Strtrim(char* s)      { char* str_end = s + strlen(s); while (str_e
 using namespace chess3d;
 
 Overlay::Overlay() {
-  m_console = new Console();
+  m_console = new Console(this);
 }
 
 Overlay::~Overlay() {
@@ -30,6 +30,7 @@ void Overlay::draw() {
   ImGui::SetNextWindowPos(ImGui::GetMainViewport()->WorkPos, ImGuiCond_FirstUseEver);
   if (ImGui::Begin("Chess 3D!", &m_open)) {
     drawHeader();
+    drawButtons();
     drawConsole();
   }
   ImGui::End();
@@ -45,6 +46,17 @@ void Overlay::drawHeader() {
   ImGui::Text("Player makes first move.");
 }
 
+void Overlay::drawButtons() {
+  if (m_engine.isRunning()) {
+    if (ImGui::Button("Stop Engine")) {
+      m_running = false;
+      m_engine.quitEngine();
+    }
+  } else {
+    if (ImGui::Button("Start Engine")) { m_running = m_engine.initializeEngine(); }
+  }
+}
+
 void Overlay::drawConsole() {
   ImGui::SetNextItemOpen(true, ImGuiCond_Once);
   if (!ImGui::CollapsingHeader("Moves", ImGuiTreeNodeFlags_DefaultOpen)) {
@@ -53,7 +65,7 @@ void Overlay::drawConsole() {
   m_console->draw();
 }
 
-Overlay::Console::Console() {
+Overlay::Console::Console(Overlay* parent) : parent(parent) {
   memset(InputBuf, 0, sizeof(InputBuf));
 }
 
@@ -86,21 +98,22 @@ void Overlay::Console::draw() {
   ImGui::EndChild();
   ImGui::Separator();
 
+  if (!parent->m_running) { ImGui::BeginDisabled(); }
   // Input Line
   bool reclaim_focus = false;
-  ImGuiInputTextFlags input_text_flags = ImGuiInputTextFlags_EnterReturnsTrue |
-                                         ImGuiInputTextFlags_EscapeClearsAll;
+  ImGuiInputTextFlags input_text_flags = ImGuiInputTextFlags_EnterReturnsTrue;
   if (ImGui::InputTextWithHint("Move", "press ENTER",
                                InputBuf, IM_ARRAYSIZE(InputBuf), input_text_flags)) {
     char* s = InputBuf;
     ImGui::Strtrim(s);
     if (s[0]) {
-      AddLog(s);
+      makeMove(s);
     }
     strcpy(s, "");
     reclaim_focus = true;
   }
 
+  if (!parent->m_running) { ImGui::EndDisabled(); }
   // Auto-focus on window apparition
   ImGui::SetItemDefaultFocus();
   if (reclaim_focus) {
@@ -108,8 +121,11 @@ void Overlay::Console::draw() {
   }
 }
 
-void Overlay::Console::AddLog(const char* move) {
+void Overlay::Console::makeMove(const char* move) {
+  // Save the move in the log
   Items.push_back(ImGui::Strdup(move));
+
+  parent->m_engine.makePlayerMove(move);
   // Delete older in-case size grows too long (unlikely)
   // if (Items.Size > LogLimit) {
   //   int offset = Items.Size - LogLimit;

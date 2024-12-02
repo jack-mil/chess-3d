@@ -84,8 +84,7 @@ target_include_directories(chess SYSTEM INTERFACE "${chess_SOURCE_DIR}/include")
 # The CONFIG flag makes sure we get OGRE instead of OGRE-next
 find_package(OGRE REQUIRED COMPONENTS Bites CONFIG)
 
-
-add_executable(${PROJECT_NAME} src/main.cpp src/chessEngine.cpp src/ChessApp.cpp src/overlayGUI.cpp)
+add_executable(${PROJECT_NAME} src/main.cpp src/app.cpp src/overlay.cpp src/engine.cpp)
 target_link_libraries(${PROJECT_NAME} PRIVATE uciadapter chess clipp fmt::fmt reproc++ OgreBites)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 

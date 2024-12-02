@@ -3,6 +3,7 @@
 #include <string>
 
 #include "chess.hpp"
+
 #include "UCI.hpp"
 
 namespace chess3d {
