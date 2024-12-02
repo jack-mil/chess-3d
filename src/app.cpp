@@ -37,6 +37,7 @@
 #include "OgreOverlaySystem.h"
 #include "OgreRTShaderSystem.h"
 #include "OgreRenderWindow.h"
+#include "OgreTrays.h"
 #include "OgreRoot.h"
 
 #include "app.hpp"
@@ -77,8 +78,7 @@ void ChessApplication::loadResources() {
   // load essential resources for trays/ loading bar
   // createDummyScene();
   resourceMgr->initialiseResourceGroup("Essential");
-  // mTrayMgr = new OgreBites::TrayManager("Iterface", getRenderWindow());
-  // addInputListener(mTrayMgr); // takes ownership
+  mTrayMgr = new OgreBites::TrayManager("Iterface", getRenderWindow());
 
   // show loading progress
   // mTrayMgr->showLoadingBar(3, 3);
@@ -114,9 +114,8 @@ void ChessApplication::setup() {
   sceneOrigin->loadChildren("chess.scene");
 
   // overlay/ trays
-  // mTrayMgr->showFrameStats(TrayLocation::TL_TOPLEFT);
-  // mTrayMgr->hideCursor();
-  // mTrayMgr->toggleAdvancedFrameStats();
+  mTrayMgr->toggleAdvancedFrameStats();
+  mTrayMgr->hideCursor();
   // mTrayMgr->refreshCursor();
 
   // imgui overlay
@@ -136,18 +135,28 @@ void ChessApplication::setup() {
   // (named node loaded from the .scene)
   // camera manager (movement) from python example
   SceneNode* camNode = scnMgr->getSceneNode("cam1");
+  // SceneNode* boardNode = scnMgr->getSceneNode("board");
+  // const auto& pos = camNode->getPosition();
+  // const auto& dist = (camNode->getPosition() - boardNode->_getDerivedPosition()).length();
+  // const auto& q = camNode->getOrientation();
   mCamMan = new OgreBites::CameraMan(camNode);
+  // mCamMan->setTarget(boardNode);
   mCamMan->setStyle(OgreBites::CS_ORBIT);
+  // camNode->setPosition(pos);
+  // camNode->setOrientation(q);
+
+  // mCamMan->setFixedYaw(false);
+  
   Camera* cam = scnMgr->getCamera("cam1");
   cam->setAutoAspectRatio(true);
 
-  // Add the input listeners in order
-  auto inputChain = new OgreBites::InputListenerChain({this, getImGuiInputListener(), mCamMan});
-  addInputListener(inputChain); // takes ownership
   // Extra debug controls
   // see: https://ogrecave.github.io/ogre/api/latest/class_ogre_bites_1_1_advanced_render_controls.html
-  // mCtrls = new AdvancedRenderControls(mTrayMgr, cam);
+  mCtrls = new OgreBites::AdvancedRenderControls(mTrayMgr, cam);
   // addInputListener(mCtrls); // takes ownership
+  // Add the input listeners in order
+  auto inputChain = new OgreBites::InputListenerChain({this, mCtrls, mTrayMgr, getImGuiInputListener(), mCamMan });
+  addInputListener(inputChain); // takes ownership
 
   // Set render target to this camera output
   Viewport* vp = getRenderWindow()->addViewport(cam);
@@ -246,6 +255,15 @@ bool ChessApplication::keyPressed(const OgreBites::KeyboardEvent& evt) {
     return true;
   } else if (evt.keysym.sym == SDLK_F12) {
     m_ui->toggleDebug();
+    return true;
+  } else if (evt.keysym.sym == SDLK_F3) {
+    if(mTrayMgr->areFrameStatsVisible()){
+      mTrayMgr->hideFrameStats();
+    }else{
+      mTrayMgr->showFrameStats(TrayLocation::TL_TOPRIGHT);
+    }
+
+    // mCtrls->buttonPressed
     return true;
   }
 

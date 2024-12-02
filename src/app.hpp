@@ -7,6 +7,8 @@
 // forward declarations
 namespace OgreBites {
 class CameraMan;
+class TrayManager;
+class AdvancedRenderControls;
 }
 
 namespace chess3d {
@@ -27,9 +29,9 @@ public:
   void exec();
 
 private:
-  // TrayManager* mTrayMgr = nullptr;
+  OgreBites::TrayManager* mTrayMgr = nullptr;
   OgreBites::CameraMan* mCamMan = nullptr;
   Overlay* m_ui = nullptr;
-  // AdvancedRenderControls* mCtrls = nullptr;
+  OgreBites::AdvancedRenderControls* mCtrls = nullptr;
 };
 } // namespace chess3d
