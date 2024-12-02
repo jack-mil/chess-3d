@@ -52,7 +52,7 @@ bool Engine::makePlayerMove(const std::string& move) {
     std::cout << "It is not white's turn!\n";
     return false;
   }
-  
+
   auto validMove = chess::uci::uciToMove(m_board, move);
   if (validMove == chess::Move::NO_MOVE) {
     std::cout << "'" + move + "' is invalid! Try again\n";
@@ -64,7 +64,7 @@ bool Engine::makePlayerMove(const std::string& move) {
   return true;
 }
 
-bool Engine::makeEngineMove(std::string& moveOut) {
+bool Engine::getEngineMove(std::string& moveOut) {
   chess::Color side = m_board.sideToMove();
   // AI must play as black
   if (side != chess::Color::BLACK) {
@@ -84,6 +84,8 @@ bool Engine::makeEngineMove(std::string& moveOut) {
   }
   // make move on our internal board
   m_board.makeMove(validMove);
+  std::cout << "Computer moved: " << validMove << '\n';
+  std::cout << m_board.getFen() << '\n';
   // return string from engine
   moveOut = uciMove;
   return true;

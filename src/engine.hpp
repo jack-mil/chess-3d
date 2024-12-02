@@ -15,7 +15,7 @@ public:
   bool initializeEngine();
   bool quitEngine();
   bool makePlayerMove(const std::string& move);
-  bool makeEngineMove(std::string& moveOut);
+  bool getEngineMove(std::string& moveOut);
   std::string getBoardString() const;
   bool isRunning() const;
 

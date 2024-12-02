@@ -20,7 +20,8 @@ private:
     Console(Overlay* parent);
     ~Console();
     void draw();
-    void makeMove(const char* move);
+    void makePlayerMove(const char* move);
+    void makeEngineMove();
 
     Overlay* parent;
     char InputBuf[25];

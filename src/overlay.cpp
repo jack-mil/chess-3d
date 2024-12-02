@@ -102,30 +102,38 @@ void Overlay::Console::draw() {
   // Input Line
   bool reclaim_focus = false;
   ImGuiInputTextFlags input_text_flags = ImGuiInputTextFlags_EnterReturnsTrue;
-  if (ImGui::InputTextWithHint("Move", "press ENTER",
+  if (ImGui::InputTextWithHint("", "press ENTER",
                                InputBuf, IM_ARRAYSIZE(InputBuf), input_text_flags)) {
     char* s = InputBuf;
     ImGui::Strtrim(s);
     if (s[0]) {
-      makeMove(s);
+      makePlayerMove(s);
     }
     strcpy(s, "");
     reclaim_focus = true;
   }
 
-  if (!parent->m_running) { ImGui::EndDisabled(); }
   // Auto-focus on window apparition
   ImGui::SetItemDefaultFocus();
   if (reclaim_focus) {
     ImGui::SetKeyboardFocusHere(-1); // Auto focus previous widget
   }
+  ImGui::SameLine();
+  if (ImGui::Button("Computer Turn")) {
+    makeEngineMove();
+  }
+  if (!parent->m_running) { ImGui::EndDisabled(); }
 }
 
-void Overlay::Console::makeMove(const char* move) {
+void Overlay::Console::makePlayerMove(const char* move) {
+  
+  if(!parent->m_engine.makePlayerMove(move)){
+    Items.push_back(ImGui::Strdup("Something went wrong..."));
+    return;
+  }
   // Save the move in the log
   Items.push_back(ImGui::Strdup(move));
 
-  parent->m_engine.makePlayerMove(move);
   // Delete older in-case size grows too long (unlikely)
   // if (Items.Size > LogLimit) {
   //   int offset = Items.Size - LogLimit;
@@ -134,4 +142,14 @@ void Overlay::Console::makeMove(const char* move) {
   //   }
   //   Items.erase(Items.begin(), Items.begin() + offset);
   // }
+}
+
+void Overlay::Console::makeEngineMove(){
+  std::string move;
+  if(!parent->m_engine.getEngineMove(move)){
+    Items.push_back(ImGui::Strdup("Something went wrong..."));
+    return;
+  }
+  // Save the move in the log
+  Items.push_back(ImGui::Strdup(move.c_str()));
 }
