@@ -37,8 +37,8 @@
 #include "OgreOverlaySystem.h"
 #include "OgreRTShaderSystem.h"
 #include "OgreRenderWindow.h"
-#include "OgreTrays.h"
 #include "OgreRoot.h"
+#include "OgreTrays.h"
 
 #include "app.hpp"
 #include "overlay.hpp"
@@ -103,10 +103,11 @@ void ChessApplication::setup() {
 
   // get a pointer to the already created root
   Root* root = getRoot();
-  SceneManager* scnMgr = root->createSceneManager();
+  SceneManager* scnMgr = root->createSceneManager(Ogre::SMT_DEFAULT, "chessScene");
 
   // register our scene with the RTSS
   RTShader::ShaderGenerator* shadergen = RTShader::ShaderGenerator::getSingletonPtr();
+  // shadergen->getRenderState(Ogre::MSN_SHADERGEN);
   shadergen->addSceneManager(scnMgr); // must be done before we do anything with the scene
 
   // load the entire chess scene and all objects (exported from Blender)
@@ -146,7 +147,7 @@ void ChessApplication::setup() {
   // camNode->setOrientation(q);
 
   // mCamMan->setFixedYaw(false);
-  
+
   Camera* cam = scnMgr->getCamera("cam1");
   cam->setAutoAspectRatio(true);
 
@@ -155,7 +156,7 @@ void ChessApplication::setup() {
   mCtrls = new OgreBites::AdvancedRenderControls(mTrayMgr, cam);
   // addInputListener(mCtrls); // takes ownership
   // Add the input listeners in order
-  auto inputChain = new OgreBites::InputListenerChain({this, mCtrls, mTrayMgr, getImGuiInputListener(), mCamMan });
+  auto inputChain = new OgreBites::InputListenerChain({this, mCtrls, mTrayMgr, getImGuiInputListener(), mCamMan});
   addInputListener(inputChain); // takes ownership
 
   // Set render target to this camera output
@@ -172,7 +173,7 @@ void ChessApplication::setup() {
   // cam->setNearClipDistance(5);
   // camNode->attachObject(cam);
 
-  scnMgr->setAmbientLight(ColourValue(0.2, 0.2, 0.2));
+  // scnMgr->setAmbientLight(ColourValue(0.2, 0.2, 0.2));
   scnMgr->setShadowTechnique(ShadowTechnique::SHADOWTYPE_STENCIL_ADDITIVE);
 
   // Entity* ninjaEntity = scnMgr->createEntity("ninja.mesh");
@@ -236,13 +237,62 @@ void ChessApplication::setup() {
   std::cout << "Setting up Done\n";
 }
 
-// Called once a frame, updates the ImGUI UI
+// Called once a frame, updates ui
 void ChessApplication::preViewportUpdate(const Ogre::RenderTargetViewportEvent& evt) {
+
   if (!evt.source->getOverlaysEnabled()) {
     return;
   }
   Ogre::ImGuiOverlay::NewFrame();
   m_ui->draw();
+
+  controlLightPosition();
+}
+
+void ChessApplication::controlLightPosition() {
+  // From ImGui Demo ShowExampleAppSimpleOverlay
+  ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize |
+                                  ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing |
+                                  ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoMove;
+  // position the window in top right
+  const float PAD = 10.0f;
+  const ImGuiViewport* viewport = ImGui::GetMainViewport();
+  ImVec2 work_pos = viewport->WorkPos;
+  ImVec2 work_size = viewport->WorkSize;
+  ImVec2 window_pos;
+  window_pos.x = (work_pos.x + work_size.x - PAD);
+  window_pos.y = (work_pos.y + PAD);  
+  ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, ImVec2(1, 0));
+  ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
+  ImGui::Begin("Light Controls", NULL, window_flags);
+
+  ImGui::Text("Light Position");
+  ImGui::Separator();
+  { //
+    using namespace Ogre;
+
+    SceneManager* scn = getRoot()->getSceneManager("chessScene");
+    SceneNode* lightNode = scn->getSceneNode("spot1");
+    Light* light = scn->getLight("spot1");
+    SceneNode* board = scn->getSceneNode("board");
+    lightNode->lookAt(board->getPosition(), Node::TS_WORLD);
+
+    ColourValue color = light->getDiffuseColour();
+    Vector3 pos = lightNode->getPosition();
+    Quaternion rot = lightNode->getOrientation();
+
+    ImGui::ColorEdit3("Color", color.ptr(), ImGuiColorEditFlags_Float);
+    ImGui::DragFloat3("(XYZ) Pos", pos.ptr(), 0.1f, -10.0f, 10.0f, "%0.3f", ImGuiSliderFlags_AlwaysClamp);
+    ImGui::BeginDisabled(); // read only
+    ImGui::DragFloat4("(WXYZ) Rot", rot.ptr(), 0.1f, -1.0f, 1.0f, "%0.4f");
+    ImGui::EndDisabled();
+    
+    lightNode->setPosition(pos);
+    light->setDiffuseColour(color);
+    light->setSpecularColour(color);
+  }
+
+  ImGui::End();
 }
 
 bool ChessApplication::keyPressed(const OgreBites::KeyboardEvent& evt) {
@@ -256,10 +306,10 @@ bool ChessApplication::keyPressed(const OgreBites::KeyboardEvent& evt) {
   } else if (evt.keysym.sym == SDLK_F12) {
     m_ui->toggleDebug();
     return true;
-  } else if (evt.keysym.sym == SDLK_F3) {
-    if(mTrayMgr->areFrameStatsVisible()){
+  } else if (evt.keysym.sym == 'f') {
+    if (mTrayMgr->areFrameStatsVisible()) {
       mTrayMgr->hideFrameStats();
-    }else{
+    } else {
       mTrayMgr->showFrameStats(TrayLocation::TL_TOPRIGHT);
     }
 

@@ -20,15 +20,16 @@ class ChessApplication
 public:
   ChessApplication();
   virtual ~ChessApplication();
+  void exec();
 
+private:
   void setup() override;
   void loadResources() override;
   bool keyPressed(const OgreBites::KeyboardEvent& evt) override;
   void preViewportUpdate(const Ogre::RenderTargetViewportEvent& evt) override;
 
-  void exec();
+  void controlLightPosition();
 
-private:
   OgreBites::TrayManager* mTrayMgr = nullptr;
   OgreBites::CameraMan* mCamMan = nullptr;
   Overlay* m_ui = nullptr;

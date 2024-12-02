@@ -13,18 +13,9 @@
         <userData />
       </entity>
     </node>
-    <node name="area1" >
-      <position x="-5.500000" y="1.000000" z="0.000000" />
-      <rotation qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" />
-      <scale x="1.000000" y="1.000000" z="1.000000" />
-      <light name="area1" powerScale="992.876953125" type="point" >
-        <colourDiffuse b="1.000000" g="1.000000" r="0.407638" />
-        <colourSpecular b="1.000000" g="1.000000" r="0.407638" />
-      </light>
-    </node>
     <node name="cam1" >
-      <position x="-13" y="7.0" z="0.235" />
-      <rotation qw="0.6833" qx="-0.175" qy="-0.68715" qz="-0.175" />
+      <position x="-8.51578" y="6.84576" z="0.624771" />
+      <rotation qw="0.650849" qx="-0.266852" qy="-0.657634" qz="-0.269635" />
       <scale x="1.000000" y="1.000000" z="1.000000" />
       <camera fov="0.302751" name="cam1" projectionType="perspective" >
         <clipping far="1000.000000" near="0.100000" />
@@ -34,17 +25,26 @@
       <position x="-0.000000" y="6.000000" z="0.000000" />
       <rotation qw="0.707107" qx="-0.707107" qy="-0.000000" qz="-0.000000" />
       <scale x="1.000000" y="1.000000" z="1.000000" />
-      <light name="spot1" powerScale="1000.0" type="spot" >
+      <light name="spot1" powerScale="1" type="spot" >
         <colourDiffuse b="1.000000" g="1.000000" r="1.000000" />
         <colourSpecular b="1.000000" g="1.000000" r="1.000000" />
-        <lightRange falloff="1.0" inner="1.3184939277675944" outer="1.5707963705062866" />
+        <lightRange falloff="1" inner="1" outer="2" />
+      </light>
+    </node>
+    <node name="area1" >
+      <position x="5.500000" y="1.000000" z="0.000000" />
+      <rotation qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" />
+      <scale x="1.000000" y="1.000000" z="1.000000" />
+      <light name="area1" powerScale="1" type="point" >
+        <colourDiffuse b="1.000000" g="1.000000" r="0.407638" />
+        <colourSpecular b="1.000000" g="1.000000" r="0.407638" />
       </light>
     </node>
     <node name="area2" >
-      <position x="5.500000" y="0.000000" z="0.000000" />
+      <position x="-5.500000" y="0.000000" z="0.000000" />
       <rotation qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" />
       <scale x="1.000000" y="1.000000" z="1.000000" />
-      <light name="area2" powerScale="989.99697265625" type="point" >
+      <light name="area2" powerScale="1" type="point" >
         <colourDiffuse b="0.475430" g="0.530832" r="1.000000" />
         <colourSpecular b="0.475430" g="0.530832" r="1.000000" />
       </light>
