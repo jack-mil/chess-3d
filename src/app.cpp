@@ -126,7 +126,7 @@ void App::setup() {
   auto imGUIOverlay = initialiseImGui();
   ImGuiIO& io = ImGui::GetIO();
   io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-  chess3d::setModernColors();
+  chess3d::setModernColors(ImGui::GetStyle());
   // ImGui::GetIO().FontGlobalScale = std::round(vpScale);
   imGUIOverlay->show();
   getRenderWindow()->addListener(this);

@@ -5,8 +5,7 @@
 
 namespace chess3d {
 
-void setModernColors() {
-  ImGuiStyle& style = ImGui::GetStyle();
+void setModernColors(ImGuiStyle& style) {
   ImVec4* colors = style.Colors;
 
   // Base color scheme
