@@ -16,6 +16,7 @@ public:
 
 private:
   struct Console {
+
     Console(Overlay* parent);
     ~Console();
     void draw();
@@ -27,13 +28,14 @@ private:
     ImVector<char*> Items;
     int LogLimit = 1000;
   };
+
   void drawHeader();
   void drawButtons();
   void drawConsole();
 
-  bool m_open = true;
-  bool m_demo = false;
-  bool m_running = false;
+  bool m_open;
+  bool m_demo;
+  bool m_running;
   /** Chess game state and stockfish connection */
   Engine m_engine;
   /** Text feed of player and engine moves */

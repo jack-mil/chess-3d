@@ -13,7 +13,12 @@ static void  Strtrim(char* s)      { char* str_end = s + strlen(s); while (str_e
 
 using namespace chess3d;
 
-Overlay::Overlay() : m_console(this) {
+// Initialize console with reference to the parent overlay
+Overlay::Overlay()
+    : m_open(true),
+      m_demo(false),
+      m_running(false),
+      m_console(this) {
 }
 
 void Overlay::toggleShow() { m_open = !m_open; }
