@@ -134,7 +134,7 @@ void App::setup() {
   // attach the user input controls to the camera node
   // (named node loaded from the .scene)
   // camera manager (movement) from python example
-  SceneNode* camNode = m_sceneMngr->getSceneNode("cam1");
+  SceneNode* camNode = m_sceneMngr->getSceneNode("camera1");
   // SceneNode* boardNode = scnMgr->getSceneNode("board");
   // const auto& pos = camNode->getPosition();
   // const auto& dist = (camNode->getPosition() - boardNode->_getDerivedPosition()).length();
@@ -147,7 +147,7 @@ void App::setup() {
 
   // m_camMgr->setFixedYaw(false);
 
-  Camera* cam = m_sceneMngr->getCamera("cam1");
+  Camera* cam = m_sceneMngr->getCamera("camera1");
   cam->setAutoAspectRatio(true);
 
   // Extra debug controls
@@ -270,8 +270,8 @@ void App::controlLightPosition() {
   { //
     using namespace Ogre;
 
-    auto lightNode = m_sceneMngr->getSceneNode("spot1");
-    auto light = m_sceneMngr->getLight("spot1");
+    auto lightNode = m_sceneMngr->getSceneNode("light.spot1");
+    auto light = m_sceneMngr->getLight("light.spot1");
     auto board = m_sceneMngr->getSceneNode("board");
     lightNode->lookAt(board->getPosition(), Node::TS_WORLD);
 
