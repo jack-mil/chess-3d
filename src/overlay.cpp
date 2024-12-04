@@ -28,7 +28,7 @@ void Overlay::draw() {
   if (!m_open) { return; }
 
   ImGui::SetNextWindowPos(ImGui::GetMainViewport()->WorkPos, ImGuiCond_FirstUseEver);
-  if (ImGui::Begin("Chess 3D!", &m_open)) {
+  if (ImGui::Begin("Chess 3D! - ECE 6122 - Jackson Miller", &m_open)) {
     drawHeader();
     drawButtons();
     drawConsole();
