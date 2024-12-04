@@ -9,7 +9,6 @@ namespace chess3d {
 class Overlay {
 public:
   Overlay();
-  ~Overlay();
 
   void draw();
   void toggleShow();
@@ -35,9 +34,9 @@ private:
   bool m_open = true;
   bool m_demo = false;
   bool m_running = false;
-  /** Text feed of player and engine moves */
-  Console* m_console = nullptr;
   /** Chess game state and stockfish connection */
   Engine m_engine;
+  /** Text feed of player and engine moves */
+  Console m_console;
 };
 } // namespace chess3d

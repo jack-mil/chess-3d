@@ -13,12 +13,7 @@ static void  Strtrim(char* s)      { char* str_end = s + strlen(s); while (str_e
 
 using namespace chess3d;
 
-Overlay::Overlay() {
-  m_console = new Console(this);
-}
-
-Overlay::~Overlay() {
-  delete m_console;
+Overlay::Overlay() : m_console(this) {
 }
 
 void Overlay::toggleShow() { m_open = !m_open; }
@@ -62,7 +57,7 @@ void Overlay::drawConsole() {
   if (!ImGui::CollapsingHeader("Moves", ImGuiTreeNodeFlags_DefaultOpen)) {
     return;
   }
-  m_console->draw();
+  m_console.draw();
 }
 
 Overlay::Console::Console(Overlay* parent) : parent(parent) {
@@ -126,8 +121,8 @@ void Overlay::Console::draw() {
 }
 
 void Overlay::Console::makePlayerMove(const char* move) {
-  
-  if(!parent->m_engine.makePlayerMove(move)){
+
+  if (!parent->m_engine.makePlayerMove(move)) {
     Items.push_back(ImGui::Strdup("Something went wrong..."));
     return;
   }
@@ -144,9 +139,9 @@ void Overlay::Console::makePlayerMove(const char* move) {
   // }
 }
 
-void Overlay::Console::makeEngineMove(){
+void Overlay::Console::makeEngineMove() {
   std::string move;
-  if(!parent->m_engine.getEngineMove(move)){
+  if (!parent->m_engine.getEngineMove(move)) {
     Items.push_back(ImGui::Strdup("Something went wrong..."));
     return;
   }

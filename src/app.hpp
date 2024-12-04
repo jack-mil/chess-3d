@@ -37,6 +37,6 @@ private:
   OgreBites::CameraMan* m_camMgr = nullptr;
   OgreBites::AdvancedRenderControls* m_ctrls = nullptr;
 
-  Overlay* m_ui = nullptr;
+  std::unique_ptr<Overlay> m_ui;
 };
 } // namespace chess3d
