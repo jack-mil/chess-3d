@@ -111,10 +111,17 @@ void App::setup() {
   RTShader::ShaderGenerator* shadergen = RTShader::ShaderGenerator::getSingletonPtr();
   // shadergen->getRenderState(Ogre::MSN_SHADERGEN);
   shadergen->addSceneManager(m_sceneMngr); // must be done before we do anything with the scene
+  m_sceneMngr->setShadowTechnique(ShadowTechnique::SHADOWTYPE_TEXTURE_ADDITIVE);
 
   // load the entire chess scene and all objects (exported from Blender)
   auto sceneOrigin = m_sceneMngr->getRootSceneNode()->createChildSceneNode();
   sceneOrigin->loadChildren("chess.scene");
+
+  // Set render target to this camera output
+  Camera* cam = m_sceneMngr->getCamera("camera1");
+  cam->setAutoAspectRatio(true);
+  Viewport* vp = getRenderWindow()->addViewport(cam);
+  vp->setBackgroundColour(ColourValue(0.2, 0.2, 0.2));
 
   // overlay/ trays
 
@@ -134,6 +141,8 @@ void App::setup() {
   // attach the user input controls to the camera node
   // (named node loaded from the .scene)
   // camera manager (movement) from python example
+
+
   SceneNode* camNode = m_sceneMngr->getSceneNode("camera1");
   // SceneNode* boardNode = scnMgr->getSceneNode("board");
   // const auto& pos = camNode->getPosition();
@@ -147,9 +156,6 @@ void App::setup() {
 
   // m_camMgr->setFixedYaw(false);
 
-  Camera* cam = m_sceneMngr->getCamera("camera1");
-  cam->setAutoAspectRatio(true);
-
   // Extra debug controls
   // see: https://ogrecave.github.io/ogre/api/latest/class_ogre_bites_1_1_advanced_render_controls.html
   // m_ctrls = std::make_unique<OgreBites::AdvancedRenderControls>(m_trayMgr.get(), cam);
@@ -157,9 +163,7 @@ void App::setup() {
   m_inputChain = OgreBites::InputListenerChain({this, /* m_ctrls.get(), m_trayMgr.get(), */ getImGuiInputListener(), m_camMgr.get()});
   addInputListener(&m_inputChain);
 
-  // Set render target to this camera output
-  Viewport* vp = getRenderWindow()->addViewport(cam);
-  vp->setBackgroundColour(ColourValue(0.2, 0.2, 0.2));
+
   // m_camMgr->setYawPitchDist(Radian(0), Radian(0.3), 100);
   // SceneNode* camNode = scnMgr->getRootSceneNode()->createChildSceneNode();
   // Camera* cam = scnMgr->createCamera("myCam");
@@ -171,8 +175,8 @@ void App::setup() {
   // cam->setNearClipDistance(5);
   // camNode->attachObject(cam);
 
-  // scnMgr->setAmbientLight(ColourValue(0.2, 0.2, 0.2));
-  m_sceneMngr->setShadowTechnique(ShadowTechnique::SHADOWTYPE_STENCIL_ADDITIVE);
+  // m_sceneMngr->setAmbientLight(ColourValue(0.2, 0.2, 0.2));
+
 
   // Entity* ninjaEntity = scnMgr->createEntity("ninja.mesh");
   // ninjaEntity->setCastShadows(true);

@@ -3,8 +3,8 @@ material stone_chess_board_mat {
     receive_shadows on
     technique {
         pass {
-            diffuse 0.319285 0.319285 0.319285 1.0
-            specular 0.916082 0.916082 0.916082 1.0 94.358
+            // diffuse 0.319285 0.319285 0.319285 1.0
+            // specular 0.916082 0.916082 0.916082 1.0 94.358
             texture_unit {
                 texture stone_chess_board_diff.jpg
             }
