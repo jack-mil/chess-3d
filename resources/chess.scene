@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- exporter: blender2ogre 0.9.0 -->
-<!-- export_time: Sat, 30 Nov 2024 07:08:14 +0000 -->
+<!-- export_time: Wed, 04 Dec 2024 17:00:21 +0000 -->
 <!-- blender_version: 4.3.0 (release; Linux) -->
-<!-- previous_export_time: Sat, 30 Nov 2024 07:07:54 +0000 -->
+<!-- previous_export_time: Wed, 04 Dec 2024 16:51:21 +0000 -->
 <scene author="jackmil" formatVersion="1.1" >
   <nodes >
     <node name="board" >
@@ -49,11 +49,31 @@
         <colourSpecular b="0.475430" g="0.530832" r="1.000000" />
       </light>
     </node>
-    <node name="rook.w.1" >
-      <position x="-3.495339" y="-1.168856" z="-2.769225" />
-      <rotation qw="0.707107" qx="-0.707107" qy="-0.000000" qz="-0.000000" />
+    <node name="pieces.white" >
+      <position x="0.000000" y="0.000000" z="0.000000" />
+      <rotation qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" />
       <scale x="1.000000" y="1.000000" z="1.000000" />
-      <entity meshFile="rook.w.mesh" name="rook.w.1" >
+      <node name="bishop.w.1" >
+        <position x="-3.495339" y="-0.998856" z="-0.769225" />
+        <rotation qw="0.000000" qx="-0.000000" qy="-0.707107" qz="-0.707107" />
+        <scale x="1.000000" y="1.000000" z="1.000000" />
+        <entity meshFile="bishop.w.mesh" name="bishop.w.1" >
+          <userData />
+        </entity>
+      </node>
+      <node name="bishop.w.2" >
+        <position x="-3.495339" y="-0.998856" z="2.230775" />
+        <rotation qw="0.000000" qx="-0.000000" qy="-0.707107" qz="-0.707107" />
+        <scale x="1.000000" y="1.000000" z="1.000000" />
+        <entity meshFile="bishop.w.mesh" name="bishop.w.2" >
+          <userData />
+        </entity>
+      </node>
+      <node name="king.w" >
+        <position x="-3.495339" y="-0.748856" z="0.230775" />
+        <rotation qw="0.707107" qx="-0.707107" qy="0.000000" qz="0.000000" />
+        <scale x="1.000000" y="1.000000" z="1.000000" />
+        <entity meshFile="king.w.mesh" name="king.w" >
         <userData />
       </entity>
     </node>
@@ -65,41 +85,17 @@
         <userData />
       </entity>
     </node>
-    <node name="bishop.w.1" >
-      <position x="-3.495339" y="-0.998856" z="-0.769225" />
+      <node name="knight.w.2" >
+        <position x="-3.495339" y="-1.148856" z="3.230775" />
       <rotation qw="0.000000" qx="-0.000000" qy="-0.707107" qz="-0.707107" />
       <scale x="1.000000" y="1.000000" z="1.000000" />
-      <entity meshFile="bishop.w.mesh" name="bishop.w.1" >
-        <userData />
-      </entity>
-    </node>
-    <node name="queen.w" >
-      <position x="-3.495339" y="-0.718856" z="1.230775" />
-      <rotation qw="0.707107" qx="-0.707107" qy="-0.000000" qz="-0.000000" />
-      <scale x="1.000000" y="1.000000" z="1.000000" />
-      <entity meshFile="queen.w.mesh" name="queen.w" >
-        <userData />
-      </entity>
-    </node>
-    <node name="king.w" >
-      <position x="-3.495339" y="-0.748856" z="0.230775" />
-      <rotation qw="0.707107" qx="-0.707107" qy="-0.000000" qz="-0.000000" />
-      <scale x="1.000000" y="1.000000" z="1.000000" />
-      <entity meshFile="king.w.mesh" name="king.w" >
-        <userData />
-      </entity>
-    </node>
-    <node name="pawn.w.7" >
-      <position x="-2.484287" y="-1.298856" z="3.230775" />
-      <rotation qw="0.707107" qx="-0.707107" qy="-0.000000" qz="-0.000000" />
-      <scale x="1.000000" y="1.000000" z="1.000000" />
-      <entity meshFile="pawn.w.mesh" name="pawn.w.7" >
+        <entity meshFile="knight.w.mesh" name="knight.w.2" >
         <userData />
       </entity>
     </node>
     <node name="pawn.w.1" >
       <position x="-2.495339" y="-1.298856" z="-2.769225" />
-      <rotation qw="0.707107" qx="-0.707107" qy="-0.000000" qz="-0.000000" />
+        <rotation qw="0.707107" qx="-0.707107" qy="0.000000" qz="0.000000" />
       <scale x="1.000000" y="1.000000" z="1.000000" />
       <entity meshFile="pawn.w.mesh" name="pawn.w.1" >
         <userData />
@@ -107,7 +103,7 @@
     </node>
     <node name="pawn.w.2" >
       <position x="-2.495339" y="-1.298856" z="-1.769225" />
-      <rotation qw="0.707107" qx="-0.707107" qy="-0.000000" qz="-0.000000" />
+        <rotation qw="0.707107" qx="-0.707107" qy="0.000000" qz="0.000000" />
       <scale x="1.000000" y="1.000000" z="1.000000" />
       <entity meshFile="pawn.w.mesh" name="pawn.w.2" >
         <userData />
@@ -115,7 +111,7 @@
     </node>
     <node name="pawn.w.3" >
       <position x="-2.495339" y="-1.298856" z="-0.769225" />
-      <rotation qw="0.707107" qx="-0.707107" qy="-0.000000" qz="-0.000000" />
+        <rotation qw="0.707107" qx="-0.707107" qy="0.000000" qz="0.000000" />
       <scale x="1.000000" y="1.000000" z="1.000000" />
       <entity meshFile="pawn.w.mesh" name="pawn.w.3" >
         <userData />
@@ -123,7 +119,7 @@
     </node>
     <node name="pawn.w.4" >
       <position x="-2.495339" y="-1.298856" z="0.230775" />
-      <rotation qw="0.707107" qx="-0.707107" qy="-0.000000" qz="-0.000000" />
+        <rotation qw="0.707107" qx="-0.707107" qy="0.000000" qz="0.000000" />
       <scale x="1.000000" y="1.000000" z="1.000000" />
       <entity meshFile="pawn.w.mesh" name="pawn.w.4" >
         <userData />
@@ -131,7 +127,7 @@
     </node>
     <node name="pawn.w.5" >
       <position x="-2.495339" y="-1.298856" z="1.230775" />
-      <rotation qw="0.707107" qx="-0.707107" qy="-0.000000" qz="-0.000000" />
+        <rotation qw="0.707107" qx="-0.707107" qy="0.000000" qz="0.000000" />
       <scale x="1.000000" y="1.000000" z="1.000000" />
       <entity meshFile="pawn.w.mesh" name="pawn.w.5" >
         <userData />
@@ -139,57 +135,62 @@
     </node>
     <node name="pawn.w.6" >
       <position x="-2.495339" y="-1.298856" z="2.230775" />
-      <rotation qw="0.707107" qx="-0.707107" qy="-0.000000" qz="-0.000000" />
+        <rotation qw="0.707107" qx="-0.707107" qy="0.000000" qz="0.000000" />
       <scale x="1.000000" y="1.000000" z="1.000000" />
       <entity meshFile="pawn.w.mesh" name="pawn.w.6" >
         <userData />
       </entity>
     </node>
+      <node name="pawn.w.7" >
+        <position x="-2.484287" y="-1.298856" z="3.230775" />
+        <rotation qw="0.707107" qx="-0.707107" qy="0.000000" qz="0.000000" />
+        <scale x="1.000000" y="1.000000" z="1.000000" />
+        <entity meshFile="pawn.w.mesh" name="pawn.w.7" >
+          <userData />
+        </entity>
+      </node>
     <node name="pawn.w.8" >
       <position x="-2.495339" y="-1.298856" z="4.230775" />
-      <rotation qw="0.707107" qx="-0.707107" qy="-0.000000" qz="-0.000000" />
+        <rotation qw="0.707107" qx="-0.707107" qy="0.000000" qz="0.000000" />
       <scale x="1.000000" y="1.000000" z="1.000000" />
       <entity meshFile="pawn.w.mesh" name="pawn.w.8" >
         <userData />
       </entity>
     </node>
-    <node name="bishop.w.2" >
-      <position x="-3.495339" y="-0.998856" z="2.230775" />
-      <rotation qw="0.000000" qx="-0.000000" qy="-0.707107" qz="-0.707107" />
+      <node name="queen.w" >
+        <position x="-3.495339" y="-0.718856" z="1.230775" />
+        <rotation qw="0.707107" qx="-0.707107" qy="0.000000" qz="0.000000" />
       <scale x="1.000000" y="1.000000" z="1.000000" />
-      <entity meshFile="bishop.w.mesh" name="bishop.w.2" >
+        <entity meshFile="queen.w.mesh" name="queen.w" >
         <userData />
       </entity>
     </node>
-    <node name="knight.w.2" >
-      <position x="-3.495339" y="-1.148856" z="3.230775" />
-      <rotation qw="0.000000" qx="-0.000000" qy="-0.707107" qz="-0.707107" />
+      <node name="rook.w.1" >
+        <position x="-3.495339" y="-1.168856" z="-2.769225" />
+        <rotation qw="0.707107" qx="-0.707107" qy="0.000000" qz="0.000000" />
       <scale x="1.000000" y="1.000000" z="1.000000" />
-      <entity meshFile="knight.w.mesh" name="knight.w.2" >
+        <entity meshFile="rook.w.mesh" name="rook.w.1" >
         <userData />
       </entity>
     </node>
     <node name="rook.w.2" >
       <position x="-3.495339" y="-1.168856" z="4.230775" />
-      <rotation qw="0.707107" qx="-0.707107" qy="-0.000000" qz="-0.000000" />
+        <rotation qw="0.707107" qx="-0.707107" qy="0.000000" qz="0.000000" />
       <scale x="1.000000" y="1.000000" z="1.000000" />
       <entity meshFile="rook.w.mesh" name="rook.w.2" >
         <userData />
       </entity>
     </node>
-    <node name="rook.b.2" >
-      <position x="3.506042" y="-1.168856" z="4.230775" />
-      <rotation qw="0.707107" qx="-0.707107" qy="-0.000000" qz="-0.000000" />
-      <scale x="1.000000" y="1.000000" z="1.000000" />
-      <entity meshFile="rook.b.mesh" name="rook.b.2" >
-        <userData />
-      </entity>
     </node>
-    <node name="knight.b.2" >
-      <position x="3.506042" y="-1.148856" z="3.230775" />
-      <rotation qw="0.707107" qx="-0.707107" qy="-0.000000" qz="-0.000000" />
+    <node name="pieces.black" >
+      <position x="0.000000" y="0.000000" z="0.000000" />
+      <rotation qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" />
       <scale x="1.000000" y="1.000000" z="1.000000" />
-      <entity meshFile="knight.b.mesh" name="knight.b.2" >
+      <node name="bishop.b.1" >
+        <position x="3.506042" y="-0.998856" z="-0.769225" />
+        <rotation qw="0.707107" qx="-0.707107" qy="-0.000000" qz="-0.000000" />
+        <scale x="1.000000" y="1.000000" z="1.000000" />
+        <entity meshFile="bishop.b.mesh" name="bishop.b.1" >
         <userData />
       </entity>
     </node>
@@ -201,14 +202,6 @@
         <userData />
       </entity>
     </node>
-    <node name="queen.b" >
-      <position x="3.506042" y="-0.718856" z="1.230775" />
-      <rotation qw="0.707107" qx="-0.707107" qy="-0.000000" qz="-0.000000" />
-      <scale x="1.000000" y="1.000000" z="1.000000" />
-      <entity meshFile="queen.b.mesh" name="queen.b" >
-        <userData />
-      </entity>
-    </node>
     <node name="king.b" >
       <position x="3.506042" y="-0.748856" z="0.230775" />
       <rotation qw="0.707107" qx="-0.707107" qy="-0.000000" qz="-0.000000" />
@@ -217,6 +210,31 @@
         <userData />
       </entity>
     </node>
+      <node name="knight.b.1" >
+        <position x="3.506041" y="-1.148856" z="-1.769225" />
+        <rotation qw="0.707107" qx="-0.707107" qy="-0.000000" qz="-0.000000" />
+        <scale x="1.000000" y="1.000000" z="1.000000" />
+        <entity meshFile="knight.b.mesh" name="knight.b.1" >
+          <userData />
+        </entity>
+      </node>
+      <node name="knight.b.2" >
+        <position x="3.506042" y="-1.148856" z="3.230775" />
+        <rotation qw="0.707107" qx="-0.707107" qy="-0.000000" qz="-0.000000" />
+        <scale x="1.000000" y="1.000000" z="1.000000" />
+        <entity meshFile="knight.b.mesh" name="knight.b.2" >
+          <userData />
+        </entity>
+      </node>
+      <node name="pawn.b.1" >
+        <position x="2.506041" y="-1.298856" z="-2.769225" />
+        <rotation qw="0.707107" qx="-0.707107" qy="-0.000000" qz="-0.000000" />
+        <scale x="1.000000" y="1.000000" z="1.000000" />
+        <userData />
+        <entity meshFile="pawn.b.mesh" name="pawn.b.1" >
+          <userData />
+        </entity>
+      </node>
     <node name="pawn.b.2" >
       <position x="2.494989" y="-1.298856" z="-1.769225" />
       <rotation qw="0.707107" qx="-0.707107" qy="-0.000000" qz="-0.000000" />
@@ -225,27 +243,19 @@
         <userData />
       </entity>
     </node>
-    <node name="pawn.b.8" >
-      <position x="2.506042" y="-1.298856" z="4.230775" />
+      <node name="pawn.b.3" >
+        <position x="2.506042" y="-1.298856" z="-0.769225" />
       <rotation qw="0.707107" qx="-0.707107" qy="-0.000000" qz="-0.000000" />
       <scale x="1.000000" y="1.000000" z="1.000000" />
-      <entity meshFile="pawn.b.mesh" name="pawn.b.8" >
+        <entity meshFile="pawn.b.mesh" name="pawn.b.3" >
         <userData />
       </entity>
     </node>
-    <node name="pawn.b.7" >
-      <position x="2.506042" y="-1.298856" z="3.230775" />
+      <node name="pawn.b.4" >
+        <position x="2.506042" y="-1.298856" z="0.230775" />
       <rotation qw="0.707107" qx="-0.707107" qy="-0.000000" qz="-0.000000" />
       <scale x="1.000000" y="1.000000" z="1.000000" />
-      <entity meshFile="pawn.b.mesh" name="pawn.b.7" >
-        <userData />
-      </entity>
-    </node>
-    <node name="pawn.b.6" >
-      <position x="2.506042" y="-1.298856" z="2.230775" />
-      <rotation qw="0.707107" qx="-0.707107" qy="-0.000000" qz="-0.000000" />
-      <scale x="1.000000" y="1.000000" z="1.000000" />
-      <entity meshFile="pawn.b.mesh" name="pawn.b.6" >
+        <entity meshFile="pawn.b.mesh" name="pawn.b.4" >
         <userData />
       </entity>
     </node>
@@ -257,43 +267,35 @@
         <userData />
       </entity>
     </node>
-    <node name="pawn.b.4" >
-      <position x="2.506042" y="-1.298856" z="0.230775" />
+      <node name="pawn.b.6" >
+        <position x="2.506042" y="-1.298856" z="2.230775" />
       <rotation qw="0.707107" qx="-0.707107" qy="-0.000000" qz="-0.000000" />
       <scale x="1.000000" y="1.000000" z="1.000000" />
-      <entity meshFile="pawn.b.mesh" name="pawn.b.4" >
+        <entity meshFile="pawn.b.mesh" name="pawn.b.6" >
         <userData />
       </entity>
     </node>
-    <node name="pawn.b.3" >
-      <position x="2.506042" y="-1.298856" z="-0.769225" />
+      <node name="pawn.b.7" >
+        <position x="2.506042" y="-1.298856" z="3.230775" />
       <rotation qw="0.707107" qx="-0.707107" qy="-0.000000" qz="-0.000000" />
       <scale x="1.000000" y="1.000000" z="1.000000" />
-      <entity meshFile="pawn.b.mesh" name="pawn.b.3" >
+        <entity meshFile="pawn.b.mesh" name="pawn.b.7" >
         <userData />
       </entity>
     </node>
-    <node name="pawn.b.1" >
-      <position x="2.506041" y="-1.298856" z="-2.769225" />
+      <node name="pawn.b.8" >
+        <position x="2.506042" y="-1.298856" z="4.230775" />
       <rotation qw="0.707107" qx="-0.707107" qy="-0.000000" qz="-0.000000" />
       <scale x="1.000000" y="1.000000" z="1.000000" />
-      <entity meshFile="pawn.b.mesh" name="pawn.b.1" >
+        <entity meshFile="pawn.b.mesh" name="pawn.b.8" >
         <userData />
       </entity>
     </node>
-    <node name="bishop.b.1" >
-      <position x="3.506042" y="-0.998856" z="-0.769225" />
+      <node name="queen.b" >
+        <position x="3.506042" y="-0.718856" z="1.230775" />
       <rotation qw="0.707107" qx="-0.707107" qy="-0.000000" qz="-0.000000" />
       <scale x="1.000000" y="1.000000" z="1.000000" />
-      <entity meshFile="bishop.b.mesh" name="bishop.b.1" >
-        <userData />
-      </entity>
-    </node>
-    <node name="knight.b.1" >
-      <position x="3.506041" y="-1.148856" z="-1.769225" />
-      <rotation qw="0.707107" qx="-0.707107" qy="-0.000000" qz="-0.000000" />
-      <scale x="1.000000" y="1.000000" z="1.000000" />
-      <entity meshFile="knight.b.mesh" name="knight.b.1" >
+        <entity meshFile="queen.b.mesh" name="queen.b" >
         <userData />
       </entity>
     </node>
@@ -304,6 +306,15 @@
       <entity meshFile="rook.b.mesh" name="rook.b.1" >
         <userData />
       </entity>
+      </node>
+      <node name="rook.b.2" >
+        <position x="3.506042" y="-1.168856" z="4.230775" />
+        <rotation qw="0.707107" qx="-0.707107" qy="-0.000000" qz="-0.000000" />
+        <scale x="1.000000" y="1.000000" z="1.000000" />
+        <entity meshFile="rook.b.mesh" name="rook.b.2" >
+          <userData />
+        </entity>
+      </node>
     </node>
   </nodes>
   <externals >
