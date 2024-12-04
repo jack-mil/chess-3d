@@ -86,6 +86,6 @@ find_package(OGRE REQUIRED COMPONENTS Bites CONFIG)
 
 add_executable(${PROJECT_NAME} src/main.cpp src/app.cpp src/overlay.cpp src/engine.cpp)
 target_link_libraries(${PROJECT_NAME} PRIVATE uciadapter chess clipp fmt::fmt reproc++ OgreBites)
-target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
 
 add_subdirectory(examples/)

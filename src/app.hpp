@@ -30,10 +30,11 @@ private:
   void preViewportUpdate(const Ogre::RenderTargetViewportEvent& evt) override; // from RenderTargetListener
 
   void lightPropOverlay();
-  void movePiece(int id);
+  void movePiece(const std::string& from, const std::string& to);
 
   Ogre::SceneManager* m_sceneMngr;  // non-owning
   std::list<Ogre::AnimationState*> m_animations; // non-owning
+  std::unordered_map<std::string, Ogre::SceneNode*> m_positions; //non-owning
 
   OgreBites::InputListenerChain m_inputChain;
 

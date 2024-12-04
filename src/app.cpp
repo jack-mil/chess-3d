@@ -115,8 +115,22 @@ void App::setup() {
   m_sceneMngr->setShadowTechnique(ShadowTechnique::SHADOWTYPE_TEXTURE_ADDITIVE);
 
   // load the entire chess scene and all objects (exported from Blender)
-  auto sceneOrigin = m_sceneMngr->getRootSceneNode()->createChildSceneNode();
+  auto sceneOrigin = m_sceneMngr->getRootSceneNode()->createChildSceneNode("origin");
   sceneOrigin->loadChildren("chess.scene");
+
+  // build up map of pieces at initial chess postions
+  for (auto piece : m_sceneMngr->getSceneNode("pieces")->getChildren()) {
+    // I only added position property to the pieces
+    auto prop = piece->getUserObjectBindings().getUserAny("position");
+    if (prop.has_value()) {
+      auto position = any_cast<String>(prop);
+      // add position and SceneNode pointer to map
+      if (!m_positions.contains(position)) {
+        std::cout << piece->getName() << " at " << position << '\n';
+        m_positions.insert_or_assign(position, static_cast<Ogre::SceneNode*>(piece));
+      }
+    }
+  }
 
   // Set render target to this camera output
   Camera* cam = m_sceneMngr->getCamera("camera1");
@@ -251,10 +265,10 @@ void App::preViewportUpdate(const Ogre::RenderTargetViewportEvent& evt) {
 
   lightPropOverlay();
 
-  static int id = 1;
-  ImGui::InputInt("id", &id);
+  static char from[25];
+  ImGui::InputText("id", from, IM_ARRAYSIZE(from));
   if (ImGui::Button("Click Me)")) {
-    this->movePiece(id);
+    this->movePiece(from, "a1");
   }
 }
 
@@ -353,13 +367,17 @@ bool App::frameRenderingQueued(const Ogre::FrameEvent& evt) {
   return true; // always want to return true, otherwise rendering stops
 }
 
-void App::movePiece(int id) {
+void App::movePiece(const std::string& from, const std::string& to) {
   // setup a new move animation
   using namespace Ogre;
   constexpr float duration = 2;
-  Animation* anim = m_sceneMngr->createAnimation("movePiece" + StringConverter::toString(id), duration);
+  Animation* anim = m_sceneMngr->createAnimation(from + to, duration);
 
-  auto* piece = m_sceneMngr->getSceneNode("pawn.w." + StringConverter::toString(id));
+  // auto* piece = m_sceneMngr->getSceneNode("pawn.w." + StringConverter::toString(id));
+  if (!m_positions.contains(from)) {
+    return;
+  }
+  auto piece = m_positions.at(from);
 
   // getUserAny("position").has_value()
   piece->setInitialState(); // freeze current position as animation state

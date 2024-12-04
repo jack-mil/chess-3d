@@ -1,11 +1,12 @@
-#include <fmt/base.h>
+// #include <fmt/base.h>
 #include <fmt/color.h>
+#include <fmt/format.h>
 
 #include "app.hpp"
 
-template <typename... T>
-static void log_err(std::string msg, T&&... args) {
-  fmt::print(stderr, fmt::emphasis::bold | fg(fmt::terminal_color::red), "{}\n", fmt::format(msg, args...));
+template <typename... Args>
+static inline void log_err(fmt::format_string<Args...> msg, Args&&... args) {
+  fmt::print(stderr, fmt::emphasis::bold | fg(fmt::terminal_color::red), "{}\n", fmt::format(msg, std::forward<Args>(args)...));
 }
 // static void log_info(std::string msg)
 // {
