@@ -28,10 +28,12 @@ private:
   void setup() override;                                                       // from ApplicationContext
   void loadResources() override;                                               // from ApplicationContext
   bool keyPressed(const OgreBites::KeyboardEvent& evt) override;               // from InputListener
-  void frameRendered(const Ogre::FrameEvent& evt) override;                    // from InputListener
+  bool frameRenderingQueued(const Ogre::FrameEvent& evt) override;             // from FrameListener (parent of ApplicationContext)
   void preViewportUpdate(const Ogre::RenderTargetViewportEvent& evt) override; // from RenderTargetListener
 
   void controlLightPosition();
+
+  Ogre::SceneManager* m_sceneMngr; //non-owning
 
   OgreBites::InputListenerChain m_inputChain;
   

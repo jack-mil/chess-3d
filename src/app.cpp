@@ -105,15 +105,15 @@ void App::setup() {
 
   // get a pointer to the already created root
   Root* root = getRoot();
-  SceneManager* scnMgr = root->createSceneManager(Ogre::SMT_DEFAULT, "chessScene");
+  m_sceneMngr = root->createSceneManager(Ogre::SMT_DEFAULT, "chessScene");
 
   // register our scene with the RTSS
   RTShader::ShaderGenerator* shadergen = RTShader::ShaderGenerator::getSingletonPtr();
   // shadergen->getRenderState(Ogre::MSN_SHADERGEN);
-  shadergen->addSceneManager(scnMgr); // must be done before we do anything with the scene
+  shadergen->addSceneManager(m_sceneMngr); // must be done before we do anything with the scene
 
   // load the entire chess scene and all objects (exported from Blender)
-  auto sceneOrigin = scnMgr->getRootSceneNode()->createChildSceneNode();
+  auto sceneOrigin = m_sceneMngr->getRootSceneNode()->createChildSceneNode();
   sceneOrigin->loadChildren("chess.scene");
 
   // overlay/ trays
@@ -121,7 +121,7 @@ void App::setup() {
   // imgui overlay
   // float vpScale = getDisplayDPI()/96;
   // Ogre::OverlayManager::getSingleton().setPixelRatio(vpScale);
-  scnMgr->addRenderQueueListener(getOverlaySystem());
+  m_sceneMngr->addRenderQueueListener(getOverlaySystem());
   auto imGUIOverlay = initialiseImGui();
   ImGuiIO& io = ImGui::GetIO();
   io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
@@ -134,7 +134,7 @@ void App::setup() {
   // attach the user input controls to the camera node
   // (named node loaded from the .scene)
   // camera manager (movement) from python example
-  SceneNode* camNode = scnMgr->getSceneNode("cam1");
+  SceneNode* camNode = m_sceneMngr->getSceneNode("cam1");
   // SceneNode* boardNode = scnMgr->getSceneNode("board");
   // const auto& pos = camNode->getPosition();
   // const auto& dist = (camNode->getPosition() - boardNode->_getDerivedPosition()).length();
@@ -147,7 +147,7 @@ void App::setup() {
 
   // m_camMgr->setFixedYaw(false);
 
-  Camera* cam = scnMgr->getCamera("cam1");
+  Camera* cam = m_sceneMngr->getCamera("cam1");
   cam->setAutoAspectRatio(true);
 
   // Extra debug controls
@@ -172,7 +172,7 @@ void App::setup() {
   // camNode->attachObject(cam);
 
   // scnMgr->setAmbientLight(ColourValue(0.2, 0.2, 0.2));
-  scnMgr->setShadowTechnique(ShadowTechnique::SHADOWTYPE_STENCIL_ADDITIVE);
+  m_sceneMngr->setShadowTechnique(ShadowTechnique::SHADOWTYPE_STENCIL_ADDITIVE);
 
   // Entity* ninjaEntity = scnMgr->createEntity("ninja.mesh");
   // ninjaEntity->setCastShadows(true);
@@ -235,7 +235,7 @@ void App::setup() {
   std::cout << "Setting up Done\n";
 }
 
-// Called once a frame, updates ui
+// Called before a frame is rendered, updates ui
 // RenderTargetListener override
 void App::preViewportUpdate(const Ogre::RenderTargetViewportEvent& evt) {
 
@@ -270,10 +270,9 @@ void App::controlLightPosition() {
   { //
     using namespace Ogre;
 
-    SceneManager* scn = getRoot()->getSceneManager("chessScene");
-    SceneNode* lightNode = scn->getSceneNode("spot1");
-    Light* light = scn->getLight("spot1");
-    SceneNode* board = scn->getSceneNode("board");
+    auto lightNode = m_sceneMngr->getSceneNode("spot1");
+    auto light = m_sceneMngr->getLight("spot1");
+    auto board = m_sceneMngr->getSceneNode("board");
     lightNode->lookAt(board->getPosition(), Node::TS_WORLD);
 
     ColourValue color = light->getDiffuseColour();
@@ -294,8 +293,23 @@ void App::controlLightPosition() {
   ImGui::End();
 }
 
-// InputLisener override
-void App::frameRendered(const Ogre::FrameEvent& evt) {
+/** Called after all render targets have had their rendering commands
+    issued, but before render windows have been asked to flip their
+    buffers over.
+    The usefulness of this event comes from the fact that rendering 
+    commands are queued for the GPU to process. These can take a little
+    while to finish, and so while that is happening the CPU can be doing
+    useful things. Once the request to 'flip buffers' happens, the thread
+    requesting it will block until the GPU is ready, which can waste CPU
+    cycles. Therefore, it is often a good idea to use this callback to 
+    perform per-frame processing. Of course because the frame's rendering
+    commands have already been issued, any changes you make will only
+    take effect from the next frame, but in most cases that's not noticeable.
+    - from: FrameListener override
+*/
+bool App::frameRenderingQueued(const Ogre::FrameEvent& evt) {
+  // ensure super-class gets called (calls frameRendered on all InputListeners)
+  OgreBites::ApplicationContext::frameRenderingQueued(evt);
   // can use evt.timeSinceLastFrame for time based updates,
   // or do fixed rate loop of some sort
   // need to update the chess pieces (over time visually?) here.
@@ -303,9 +317,16 @@ void App::frameRendered(const Ogre::FrameEvent& evt) {
   // updateAnimations(evt.timeSinceLastFrame);
   // updateBody(evt.timeSinceLastFrame);
   // updateCamera(evt.timeSinceLastFrame);
+  auto pawn7 = m_sceneMngr->getSceneNode("pawn.w.7");
+  static constexpr float unitsPerSecond = 0.5;
+  auto displ = evt.timeSinceLastFrame * unitsPerSecond;
+  pawn7->translate(displ, 0, -displ); // move in the +y direction
+  return true; // always want to return true, otherwise rendering stops
 }
+
 // InputLisener override
 bool App::keyPressed(const OgreBites::KeyboardEvent& evt) {
+
   using namespace OgreBites;
   if (evt.keysym.sym == SDLK_ESCAPE) {
     getRoot()->queueEndRendering();
