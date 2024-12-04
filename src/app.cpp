@@ -34,6 +34,7 @@
 #include "OgreAdvancedRenderControls.h"
 #include "OgreCameraMan.h"
 #include "OgreImGuiOverlay.h"
+#include "OgreKeyFrame.h"
 #include "OgreOverlaySystem.h"
 #include "OgreRTShaderSystem.h"
 #include "OgreRenderWindow.h"
@@ -142,7 +143,6 @@ void App::setup() {
   // (named node loaded from the .scene)
   // camera manager (movement) from python example
 
-
   SceneNode* camNode = m_sceneMngr->getSceneNode("camera1");
   // SceneNode* boardNode = scnMgr->getSceneNode("board");
   // const auto& pos = camNode->getPosition();
@@ -163,7 +163,6 @@ void App::setup() {
   m_inputChain = OgreBites::InputListenerChain({this, /* m_ctrls.get(), m_trayMgr.get(), */ getImGuiInputListener(), m_camMgr.get()});
   addInputListener(&m_inputChain);
 
-
   // m_camMgr->setYawPitchDist(Radian(0), Radian(0.3), 100);
   // SceneNode* camNode = scnMgr->getRootSceneNode()->createChildSceneNode();
   // Camera* cam = scnMgr->createCamera("myCam");
@@ -176,7 +175,6 @@ void App::setup() {
   // camNode->attachObject(cam);
 
   // m_sceneMngr->setAmbientLight(ColourValue(0.2, 0.2, 0.2));
-
 
   // Entity* ninjaEntity = scnMgr->createEntity("ninja.mesh");
   // ninjaEntity->setCastShadows(true);
@@ -236,6 +234,8 @@ void App::setup() {
   // pointLightNode->attachObject(pointLight);
   // pointLightNode->setPosition(Vector3(11, 8.6, 0.295));
 
+  Animation::setDefaultInterpolationMode(Animation::IM_SPLINE);
+
   std::cout << "Setting up Done\n";
 }
 
@@ -249,10 +249,16 @@ void App::preViewportUpdate(const Ogre::RenderTargetViewportEvent& evt) {
   Ogre::ImGuiOverlay::NewFrame();
   m_ui->draw();
 
-  controlLightPosition();
+  lightPropOverlay();
+
+  static int id = 1;
+  ImGui::InputInt("id", &id);
+  if (ImGui::Button("Click Me)")) {
+    this->movePiece(id);
+  }
 }
 
-void App::controlLightPosition() {
+void App::lightPropOverlay() {
   // From ImGui Demo ShowExampleAppSimpleOverlay
   ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize |
                                   ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing |
@@ -277,7 +283,7 @@ void App::controlLightPosition() {
     auto lightNode = m_sceneMngr->getSceneNode("light.spot1");
     auto light = m_sceneMngr->getLight("light.spot1");
     auto board = m_sceneMngr->getSceneNode("board");
-    lightNode->lookAt(board->getPosition(), Node::TS_WORLD);
+    lightNode->lookAt(board->getPosition(), Node::TS_PARENT);
 
     ColourValue color = light->getDiffuseColour();
     Vector3 pos = lightNode->getPosition();
@@ -300,20 +306,18 @@ void App::controlLightPosition() {
 /** Called after all render targets have had their rendering commands
     issued, but before render windows have been asked to flip their
     buffers over.
-    The usefulness of this event comes from the fact that rendering 
+    The usefulness of this event comes from the fact that rendering
     commands are queued for the GPU to process. These can take a little
     while to finish, and so while that is happening the CPU can be doing
     useful things. Once the request to 'flip buffers' happens, the thread
     requesting it will block until the GPU is ready, which can waste CPU
-    cycles. Therefore, it is often a good idea to use this callback to 
+    cycles. Therefore, it is often a good idea to use this callback to
     perform per-frame processing. Of course because the frame's rendering
     commands have already been issued, any changes you make will only
     take effect from the next frame, but in most cases that's not noticeable.
     - from: FrameListener override
 */
 bool App::frameRenderingQueued(const Ogre::FrameEvent& evt) {
-  // ensure super-class gets called (calls frameRendered on all InputListeners)
-  OgreBites::ApplicationContext::frameRenderingQueued(evt);
   // can use evt.timeSinceLastFrame for time based updates,
   // or do fixed rate loop of some sort
   // need to update the chess pieces (over time visually?) here.
@@ -321,11 +325,54 @@ bool App::frameRenderingQueued(const Ogre::FrameEvent& evt) {
   // updateAnimations(evt.timeSinceLastFrame);
   // updateBody(evt.timeSinceLastFrame);
   // updateCamera(evt.timeSinceLastFrame);
-  auto pawn7 = m_sceneMngr->getSceneNode("pawn.w.7");
-  static constexpr float unitsPerSecond = 0.5;
-  auto displ = evt.timeSinceLastFrame * unitsPerSecond;
-  pawn7->translate(displ, 0, -displ); // move in the +y direction
+  // auto pawn7 = m_sceneMngr->getSceneNode("pawn.w.7");
+  // static constexpr float unitsPerSecond = 0.5;
+  // auto displ = evt.timeSinceLastFrame * unitsPerSecond;
+  // pawn7->translate(displ, 0, -displ); // move in the +y direction
+  // ensure super-class gets called (calls frameRendered on all InputListeners)
+
+  // update all animations
+  // need to remove ones that have completed, so we can reuse names
+  auto iter = m_animations.begin();
+  auto end = m_animations.end();
+  while (iter != end) {
+    auto* anim = *iter;
+    anim->addTime(evt.timeSinceLastFrame);
+
+    if (anim->hasEnded()) {
+      iter = m_animations.erase(iter);
+      // also removes the associated AnimationState
+      m_sceneMngr->removeAnimation(anim->getAnimationName());
+    } else {
+      // process next one
+      ++iter;
+    }
+  }
+
+  OgreBites::ApplicationContext::frameRenderingQueued(evt);
   return true; // always want to return true, otherwise rendering stops
+}
+
+void App::movePiece(int id) {
+  // setup a new move animation
+  using namespace Ogre;
+  constexpr float duration = 2;
+  Animation* anim = m_sceneMngr->createAnimation("movePiece" + StringConverter::toString(id), duration);
+
+  auto* piece = m_sceneMngr->getSceneNode("pawn.w." + StringConverter::toString(id));
+
+  // getUserAny("position").has_value()
+  piece->setInitialState(); // freeze current position as animation state
+  auto* track = anim->createNodeTrack(0, piece);
+
+  track->createNodeKeyFrame(0)->setTranslate(Vector3(0, 0, 0));        // start
+  track->createNodeKeyFrame(duration)->setTranslate(Vector3(2, 0, 0)); // end
+
+  auto* animState = m_sceneMngr->createAnimationState(anim->getName());
+  animState->setEnabled(true);
+  animState->setLoop(false);
+  // store a pointer reference to the new state (owned by SceneManager)
+  m_animations.push_back(animState);
 }
 
 // InputLisener override

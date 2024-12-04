@@ -1,19 +1,17 @@
 #pragma once
 
-#include "OgreApplicationContext.h"
-#include "OgreInput.h"
-#include "OgreRenderTargetListener.h"
+#include <list>
 
-// forward declarations
-namespace OgreBites {
-class CameraMan;
-class TrayManager;
-class AdvancedRenderControls;
-} // namespace OgreBites
+#include "OgreApplicationContext.h"
+#include "OgrePrerequisites.h"
+#include "OgreRenderTargetListener.h"
+#include "OgreInput.h"
+
+// forward declaration
+namespace OgreBites { class CameraMan; }
 
 namespace chess3d {
-// forward declaration
-class Overlay;
+class Overlay; // forward declaration
 
 class App
     : public OgreBites::ApplicationContext,
@@ -31,12 +29,14 @@ private:
   bool frameRenderingQueued(const Ogre::FrameEvent& evt) override;             // from FrameListener (parent of ApplicationContext)
   void preViewportUpdate(const Ogre::RenderTargetViewportEvent& evt) override; // from RenderTargetListener
 
-  void controlLightPosition();
+  void lightPropOverlay();
+  void movePiece(int id);
 
-  Ogre::SceneManager* m_sceneMngr; //non-owning
+  Ogre::SceneManager* m_sceneMngr;  // non-owning
+  std::list<Ogre::AnimationState*> m_animations; // non-owning
 
   OgreBites::InputListenerChain m_inputChain;
-  
+
   // std::unique_ptr<OgreBites::TrayManager> m_trayMgr;
   std::unique_ptr<OgreBites::CameraMan> m_camMgr;
   // std::unique_ptr<OgreBites::AdvancedRenderControls> m_ctrls;
