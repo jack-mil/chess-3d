@@ -47,19 +47,20 @@
 using namespace chess3d;
 
 App::App()
-    : OgreBites::ApplicationContext("Chess 3D!"), m_ui(std::make_unique<Overlay>()) {
+    : OgreBites::ApplicationContext("Chess 3D!"),
+      m_ui(std::make_unique<Overlay>()) {
   std::cout << "Constructed\n";
-
 }
 
+// for some reason this is required
 App::~App() {
-  std::cout << "Trying destory\n";
-  // std::cout << "Deleting" << m_ctrls << "\n";
-  // delete m_ctrls;
-  // std::cout << "Deleting" << m_trayMgr << "\n";
-  // delete m_trayMgr;
-  delete m_camMgr;
-  std::cout << "Destructed\n";
+//   std::cout << "Trying destory\n";
+// //   // std::cout << "Deleting" << m_ctrls << "\n";
+// //   // delete m_ctrls;
+// //   // std::cout << "Deleting" << m_trayMgr << "\n";
+// //   // delete m_trayMgr;
+// //   // delete m_camMgr;
+//   std::cout << "Destructed\n";
 }
 
 void App::exec() {
@@ -77,7 +78,9 @@ void App::loadResources() {
   // load essential resources for trays/ loading bar
   // createDummyScene();
   resourceMgr->initialiseResourceGroup("Essential");
-  m_trayMgr = new OgreBites::TrayManager("Iterface", getRenderWindow());
+  // m_trayMgr = std::make_unique<OgreBites::TrayManager>("Iterface", getRenderWindow());
+  // m_trayMgr->toggleAdvancedFrameStats();
+  // m_trayMgr->hideCursor();
 
   // show loading progress
   // m_trayMgr->showLoadingBar(3, 3);
@@ -114,9 +117,6 @@ void App::setup() {
   sceneOrigin->loadChildren("chess.scene");
 
   // overlay/ trays
-  m_trayMgr->toggleAdvancedFrameStats();
-  m_trayMgr->hideCursor();
-  // m_trayMgr->refreshCursor();
 
   // imgui overlay
   // float vpScale = getDisplayDPI()/96;
@@ -139,7 +139,7 @@ void App::setup() {
   // const auto& pos = camNode->getPosition();
   // const auto& dist = (camNode->getPosition() - boardNode->_getDerivedPosition()).length();
   // const auto& q = camNode->getOrientation();
-  m_camMgr = new OgreBites::CameraMan(camNode);
+  m_camMgr = std::make_unique<OgreBites::CameraMan>(camNode);
   // m_camMgr->setTarget(boardNode);
   m_camMgr->setStyle(OgreBites::CS_ORBIT);
   // camNode->setPosition(pos);
@@ -152,11 +152,10 @@ void App::setup() {
 
   // Extra debug controls
   // see: https://ogrecave.github.io/ogre/api/latest/class_ogre_bites_1_1_advanced_render_controls.html
-  m_ctrls = new OgreBites::AdvancedRenderControls(m_trayMgr, cam);
-  // addInputListener(m_ctrls); // takes ownership
+  // m_ctrls = std::make_unique<OgreBites::AdvancedRenderControls>(m_trayMgr.get(), cam);
   // Add the input listeners in order
-  auto inputChain = new OgreBites::InputListenerChain({this, m_ctrls, m_trayMgr, getImGuiInputListener(), m_camMgr});
-  addInputListener(inputChain); // takes ownership
+  m_inputChain = OgreBites::InputListenerChain({this, /* m_ctrls.get(), m_trayMgr.get(), */ getImGuiInputListener(), m_camMgr.get()});
+  addInputListener(&m_inputChain);
 
   // Set render target to this camera output
   Viewport* vp = getRenderWindow()->addViewport(cam);
@@ -318,11 +317,11 @@ bool App::keyPressed(const OgreBites::KeyboardEvent& evt) {
     m_ui->toggleDebug();
     return true;
   } else if (evt.keysym.sym == 'f') {
-    if (m_trayMgr->areFrameStatsVisible()) {
-      m_trayMgr->hideFrameStats();
-    } else {
-      m_trayMgr->showFrameStats(TrayLocation::TL_TOPRIGHT);
-    }
+    // if (m_trayMgr->areFrameStatsVisible()) {
+    //   m_trayMgr->hideFrameStats();
+    // } else {
+    //   m_trayMgr->showFrameStats(TrayLocation::TL_TOPRIGHT);
+    // }
 
     // m_ctrls->buttonPressed
     return true;

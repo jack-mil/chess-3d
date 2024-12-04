@@ -33,9 +33,11 @@ private:
 
   void controlLightPosition();
 
-  OgreBites::TrayManager* m_trayMgr = nullptr;
-  OgreBites::CameraMan* m_camMgr = nullptr;
-  OgreBites::AdvancedRenderControls* m_ctrls = nullptr;
+  OgreBites::InputListenerChain m_inputChain;
+  
+  // std::unique_ptr<OgreBites::TrayManager> m_trayMgr;
+  std::unique_ptr<OgreBites::CameraMan> m_camMgr;
+  // std::unique_ptr<OgreBites::AdvancedRenderControls> m_ctrls;
 
   std::unique_ptr<Overlay> m_ui;
 };
