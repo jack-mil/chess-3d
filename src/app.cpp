@@ -48,19 +48,19 @@ using namespace chess3d;
 
 App::App()
     : OgreBites::ApplicationContext("Chess 3D!"),
-      m_ui(std::make_unique<Overlay>()) {
+      m_ui(new Overlay()) {
   std::cout << "Constructed\n";
 }
 
 // for some reason this is required
 App::~App() {
-//   std::cout << "Trying destory\n";
-// //   // std::cout << "Deleting" << m_ctrls << "\n";
-// //   // delete m_ctrls;
-// //   // std::cout << "Deleting" << m_trayMgr << "\n";
-// //   // delete m_trayMgr;
-// //   // delete m_camMgr;
-//   std::cout << "Destructed\n";
+  //   std::cout << "Trying destory\n";
+  // //   // std::cout << "Deleting" << m_ctrls << "\n";
+  // //   // delete m_ctrls;
+  // //   // std::cout << "Deleting" << m_trayMgr << "\n";
+  // //   // delete m_trayMgr;
+  // //   // delete m_camMgr;
+  //   std::cout << "Destructed\n";
 }
 
 void App::exec() {

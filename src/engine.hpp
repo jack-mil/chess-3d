@@ -1,10 +1,12 @@
 #pragma once
+#include <memory>
 
 #include <string>
 
-#include "chess.hpp"
+// forward declarations
+namespace chess{ class Board; };
 
-#include "UCI.hpp"
+namespace uciadapter{ class UCI; };
 
 namespace chess3d {
 
@@ -20,10 +22,9 @@ public:
   bool isRunning() const;
 
 private:
-  uciadapter::Go m_settings;
-  chess::Board m_board;
+  std::unique_ptr<chess::Board> m_board;
 
-  uciadapter::UCI* m_engine = nullptr;
+  std::unique_ptr<uciadapter::UCI> m_engine;
 };
 
 } // namespace chess3d
