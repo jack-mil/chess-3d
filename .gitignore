@@ -1,7 +1,9 @@
 build/**
 bin/
 clipp-1.2.3/
-*.zip
+/*.zip
+/*.mp4
+/imgui.ini
 
 ### C++ ###
 # Prerequisites
