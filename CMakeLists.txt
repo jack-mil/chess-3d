@@ -23,30 +23,8 @@ FetchContent_Declare(
     EXCLUDE_FROM_ALL ON
 )
 
-# include reproc for process handling
-set(REPROC++ ON)
-FetchContent_Declare(
-    reproc++
-    GIT_REPOSITORY https://github.com/DaanDeMeyer/reproc
-    GIT_TAG        3179928ae7b085e41dfb846d987519fa7c12ffb3  # 14.2.5
-    GIT_SHALLOW ON
-    GIT_PROGRESS ON
-    SYSTEM ON
-    EXCLUDE_FROM_ALL ON
-)
 
-# Add cli arg library clipp (single header)
-FetchContent_Declare(
-    clipp
-    GIT_REPOSITORY https://github.com/muellan/clipp/
-    GIT_TAG        2c32b2f1f7cc530b1ec1f62c92f698643bb368db  # current master (unreleased)
-    GIT_SHALLOW ON
-    GIT_PROGRESS ON
-    SYSTEM ON
-    EXCLUDE_FROM_ALL ON
-)
-
-# include UCI chess moveset library (headers only)
+# include library for managing local chess board state (headers only)
 # not a CMakeProject, see: 
 # https://cmake.org/cmake/help/latest/module/ExternalProject.html#configure-step-options
 FetchContent_Declare(
@@ -59,8 +37,9 @@ FetchContent_Declare(
     EXCLUDE_FROM_ALL ON
     CONFIGURE_COMMAND ""    # disable configure and build (only headers to include)
     BUILD_COMMAND ""        # not a CMake project
-    )
-    
+)
+ 
+# include library for interaction with the stockfish process over uci
 FetchContent_Declare(
     uciadapter
     GIT_REPOSITORY https://gitlab.com/manzerbredes/uciadapter.git
@@ -72,7 +51,7 @@ FetchContent_Declare(
 )
 
 # make all library deps linkable
-FetchContent_MakeAvailable(fmt reproc++ clipp chess uciadapter)
+FetchContent_MakeAvailable(fmt chess uciadapter)
 
 # add the chess header manully
 # because it's not a CMake project
@@ -85,7 +64,7 @@ target_include_directories(chess SYSTEM INTERFACE "${chess_SOURCE_DIR}/include")
 find_package(OGRE REQUIRED COMPONENTS Bites CONFIG)
 
 add_executable(${PROJECT_NAME} src/main.cpp src/app.cpp src/overlay.cpp src/engine.cpp)
-target_link_libraries(${PROJECT_NAME} PRIVATE uciadapter chess clipp fmt::fmt reproc++ OgreBites)
+target_link_libraries(${PROJECT_NAME} PRIVATE uciadapter chess fmt::fmt OgreBites)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
 
 add_subdirectory(examples/)

@@ -6,7 +6,6 @@ target_link_libraries(chess_example PRIVATE chess)
 # ogre 3d scene basic examples
 # https://github.com/OGRECave/ogre/blob/master/Samples/Tutorials/Bootstrap.cpp
 
-
 add_executable(ogre_bootstrap src/ogre_bootstrap.cpp)
 target_link_libraries(ogre_bootstrap OgreBites)
 target_compile_features(ogre_bootstrap PRIVATE cxx_std_14)
