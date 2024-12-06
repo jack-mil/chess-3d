@@ -261,13 +261,13 @@ void App::preViewportUpdate(const Ogre::RenderTargetViewportEvent& evt) {
 
   lightPropOverlay();
 
-  static char from[25];
-  static char to[25];
-  ImGui::InputText("from", from, IM_ARRAYSIZE(from));
-  ImGui::InputText("to", to, IM_ARRAYSIZE(to));
-  if (ImGui::Button("Click Me)")) {
-    this->movePiece(from, to);
-  }
+  // static char from[25];
+  // static char to[25];
+  // ImGui::InputText("from", from, IM_ARRAYSIZE(from));
+  // ImGui::InputText("to", to, IM_ARRAYSIZE(to));
+  // if (ImGui::Button("Click Me)")) {
+  //   this->movePiece(from, to);
+  // }
 }
 
 void App::lightPropOverlay() {
