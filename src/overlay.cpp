@@ -3,6 +3,7 @@
 // https://github.com/ocornut/imgui/blob/master/imgui_demo.cpp#L8304
 
 #include "overlay.hpp"
+#include "engine.hpp" // for sending/receiving moves.
 
 // Add portable string helpers to ImGui namespace
 // from: https://github.com/ocornut/imgui/blob/master/imgui_demo.cpp#L8346
@@ -14,12 +15,12 @@ static void  Strtrim(char* s)      { char* str_end = s + strlen(s); while (str_e
 using namespace chess3d;
 
 // Initialize console with reference to the parent overlay
-Overlay::Overlay()
+Overlay::Overlay(Engine* engine)
     : m_open(true),
       m_demo(false),
       m_running(false),
-      m_console(this) {
-}
+      m_engine(engine),
+      m_console(this) {}
 
 void Overlay::toggleShow() { m_open = !m_open; }
 void Overlay::toggleDebug() { m_demo = !m_demo; }
@@ -47,13 +48,13 @@ void Overlay::drawHeader() {
 }
 
 void Overlay::drawButtons() {
-  if (m_engine.isRunning()) {
+  if (m_engine->isRunning()) {
     if (ImGui::Button("Stop Engine")) {
       m_running = false;
-      m_engine.quitEngine();
+      m_engine->quitEngine();
     }
   } else {
-    if (ImGui::Button("Start Engine")) { m_running = m_engine.initializeEngine(); }
+    if (ImGui::Button("Start Engine")) { m_running = m_engine->initializeEngine(); }
   }
 }
 
@@ -65,7 +66,7 @@ void Overlay::drawConsole() {
   m_console.draw();
 }
 
-Overlay::Console::Console(Overlay* parent) : parent(parent) {
+Overlay::Console::Console(Overlay* parent) : m_parent(parent) {
   memset(InputBuf, 0, sizeof(InputBuf));
 }
 
@@ -98,7 +99,7 @@ void Overlay::Console::draw() {
   ImGui::EndChild();
   ImGui::Separator();
 
-  if (!parent->m_running) { ImGui::BeginDisabled(); }
+  if (!m_parent->m_running) { ImGui::BeginDisabled(); }
   // Input Line
   bool reclaim_focus = false;
   ImGuiInputTextFlags input_text_flags = ImGuiInputTextFlags_EnterReturnsTrue;
@@ -122,12 +123,12 @@ void Overlay::Console::draw() {
   if (ImGui::Button("Computer Turn")) {
     makeEngineMove();
   }
-  if (!parent->m_running) { ImGui::EndDisabled(); }
+  if (!m_parent->m_running) { ImGui::EndDisabled(); }
 }
 
 void Overlay::Console::makePlayerMove(const char* move) {
 
-  if (!parent->m_engine.makePlayerMove(move)) {
+  if (!m_parent->m_engine->makePlayerMove(move)) {
     Items.push_back(ImGui::Strdup("Something went wrong..."));
     return;
   }
@@ -146,7 +147,7 @@ void Overlay::Console::makePlayerMove(const char* move) {
 
 void Overlay::Console::makeEngineMove() {
   std::string move;
-  if (!parent->m_engine.getEngineMove(move)) {
+  if (!m_parent->m_engine->getEngineMove(move)) {
     Items.push_back(ImGui::Strdup("Something went wrong..."));
     return;
   }

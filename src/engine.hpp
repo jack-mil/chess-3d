@@ -10,9 +10,11 @@ namespace uciadapter{ class UCI; };
 
 namespace chess3d {
 
+class App; // forward declaration for movePiece callback
+
 class Engine {
 public:
-  Engine();
+  Engine(App* app);
   ~Engine();
   bool initializeEngine();
   bool quitEngine();
@@ -22,8 +24,8 @@ public:
   bool isRunning() const;
 
 private:
+  App* m_app;
   std::unique_ptr<chess::Board> m_board;
-
   std::unique_ptr<uciadapter::UCI> m_engine;
 };
 

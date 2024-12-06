@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "engine.hpp"
+#include "app.hpp"
 
 #include "chess.hpp"
 #include "UCI.hpp"
@@ -9,7 +10,7 @@ using namespace chess3d;
 
 static uciadapter::Go settings;
 
-Engine::Engine() : m_board(new chess::Board(chess::constants::STARTPOS)) {
+Engine::Engine(App* app) :  m_app(app), m_board(new chess::Board(chess::constants::STARTPOS)) {
   settings.depth = 10;
 }
 

@@ -12,6 +12,7 @@ namespace OgreBites { class CameraMan; }
 
 namespace chess3d {
 class Overlay; // forward declaration
+class Engine; // forward declaration
 
 inline Ogre::Vector3 calcDestOffset(const std::string& from, const std::string& to);
 
@@ -44,6 +45,7 @@ private:
   std::unique_ptr<OgreBites::CameraMan> m_camMgr;
   // std::unique_ptr<OgreBites::AdvancedRenderControls> m_ctrls;
 
+  std::unique_ptr<Engine> m_engine;
   std::unique_ptr<Overlay> m_ui;
 };
 } // namespace chess3d

@@ -2,13 +2,13 @@
 
 #include <imgui.h> // included with Ogre
 
-#include "engine.hpp"
-
 namespace chess3d {
+
+class Engine; // forward declaration for making moves
 
 class Overlay {
 public:
-  Overlay();
+  Overlay(Engine* engine);
 
   void draw();
   void toggleShow();
@@ -23,7 +23,7 @@ private:
     void makePlayerMove(const char* move);
     void makeEngineMove();
 
-    Overlay* parent;
+    Overlay* m_parent;
     char InputBuf[25];
     ImVector<char*> Items;
     int LogLimit = 1000;
@@ -37,7 +37,7 @@ private:
   bool m_demo;
   bool m_running;
   /** Chess game state and stockfish connection */
-  Engine m_engine;
+  Engine* m_engine;
   /** Text feed of player and engine moves */
   Console m_console;
 };

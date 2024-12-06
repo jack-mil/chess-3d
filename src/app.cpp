@@ -42,6 +42,7 @@
 #include "OgreTrays.h"
 
 #include "app.hpp"
+#include "engine.hpp"
 #include "overlay.hpp"
 #include "theme.hpp"
 
@@ -49,18 +50,13 @@ using namespace chess3d;
 
 App::App()
     : OgreBites::ApplicationContext("Chess 3D!"),
-      m_ui(new Overlay()) {
-  std::cout << "Constructed\n";
+      m_engine(std::make_unique<Engine>(this)),
+      m_ui(std::make_unique<Overlay>(m_engine.get())) {
 }
 
 // for some reason this is required
 App::~App() {
   //   std::cout << "Trying destory\n";
-  // //   // std::cout << "Deleting" << m_ctrls << "\n";
-  // //   // delete m_ctrls;
-  // //   // std::cout << "Deleting" << m_trayMgr << "\n";
-  // //   // delete m_trayMgr;
-  // //   // delete m_camMgr;
   //   std::cout << "Destructed\n";
 }
 
@@ -374,7 +370,7 @@ void App::movePiece(const std::string& from, const std::string& to) {
   // setup a move animations for moving piece and captured piece.
   // this could be better abstracted and handled in functions, but
   // its all here right now
-  
+
   using namespace Ogre;
   static constexpr float speed = 2;
   static Vector3 sidelines(3, 0, 5);
