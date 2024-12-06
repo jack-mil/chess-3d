@@ -65,6 +65,7 @@ bool Engine::makePlayerMove(const std::string& move) {
   m_board->makeMove(validMove);
   std::cout << "Player moved: " << validMove << '\n';
   std::cout << m_board->getFen() << '\n';
+  m_app->movePiece(validMove.from(), validMove.to());
   return true;
 }
 
@@ -90,6 +91,7 @@ bool Engine::getEngineMove(std::string& moveOut) {
   m_board->makeMove(validMove);
   std::cout << "Computer moved: " << validMove << '\n';
   std::cout << m_board->getFen() << '\n';
+  m_app->movePiece(validMove.from(), validMove.to());
   // return string from engine
   moveOut = uciMove;
   return true;

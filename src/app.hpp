@@ -3,16 +3,18 @@
 #include <list>
 
 #include "OgreApplicationContext.h"
+#include "OgreInput.h"
 #include "OgrePrerequisites.h"
 #include "OgreRenderTargetListener.h"
-#include "OgreInput.h"
 
 // forward declaration
-namespace OgreBites { class CameraMan; }
+namespace OgreBites {
+class CameraMan;
+}
 
 namespace chess3d {
 class Overlay; // forward declaration
-class Engine; // forward declaration
+class Engine;  // forward declaration
 
 inline Ogre::Vector3 calcDestOffset(const std::string& from, const std::string& to);
 
@@ -35,9 +37,9 @@ private:
   void lightPropOverlay();
   void movePiece(const std::string& from, const std::string& to);
 
-  Ogre::SceneManager* m_sceneMngr;  // non-owning
-  std::list<Ogre::AnimationState*> m_animations; // non-owning
-  std::unordered_map<std::string, Ogre::SceneNode*> m_positions; //non-owning
+  Ogre::SceneManager* m_sceneMngr;                               // non-owning
+  std::list<Ogre::AnimationState*> m_animations;                 // non-owning
+  std::unordered_map<std::string, Ogre::SceneNode*> m_positions; // non-owning
 
   OgreBites::InputListenerChain m_inputChain;
 
@@ -47,5 +49,7 @@ private:
 
   std::unique_ptr<Engine> m_engine;
   std::unique_ptr<Overlay> m_ui;
+
+  friend class Engine;
 };
 } // namespace chess3d

@@ -129,7 +129,7 @@ void Overlay::Console::draw() {
 void Overlay::Console::makePlayerMove(const char* move) {
 
   if (!m_parent->m_engine->makePlayerMove(move)) {
-    Items.push_back(ImGui::Strdup("Something went wrong..."));
+    Items.push_back(ImGui::Strdup("Not your turn!"));
     return;
   }
   // Save the move in the log
