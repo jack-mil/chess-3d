@@ -266,9 +266,11 @@ void App::preViewportUpdate(const Ogre::RenderTargetViewportEvent& evt) {
   lightPropOverlay();
 
   static char from[25];
-  ImGui::InputText("id", from, IM_ARRAYSIZE(from));
+  static char to[25];
+  ImGui::InputText("from", from, IM_ARRAYSIZE(from));
+  ImGui::InputText("to", to, IM_ARRAYSIZE(to));
   if (ImGui::Button("Click Me)")) {
-    this->movePiece(from, "a1");
+    this->movePiece(from, to);
   }
 }
 
@@ -367,30 +369,67 @@ bool App::frameRenderingQueued(const Ogre::FrameEvent& evt) {
   return true; // always want to return true, otherwise rendering stops
 }
 
+/** from/to are algebraic chess cells e.g. a1, c5, d8, etc. Assumed to be correct */
 void App::movePiece(const std::string& from, const std::string& to) {
-  // setup a new move animation
+  // setup a move animations for moving piece and captured piece.
+  // this could be better abstracted and handled in functions, but
+  // its all here right now
+  
   using namespace Ogre;
-  constexpr float duration = 2;
-  Animation* anim = m_sceneMngr->createAnimation(from + to, duration);
+  static constexpr float speed = 2;
+  static Vector3 sidelines(3, 0, 5);
 
-  // auto* piece = m_sceneMngr->getSceneNode("pawn.w." + StringConverter::toString(id));
   if (!m_positions.contains(from)) {
     return;
   }
-  auto piece = m_positions.at(from);
+  // get the piece pointer at this location,
+  // and remove it from the mapping in one go
+  auto piece = m_positions.extract(from).mapped();
+  Vector3 offset = calcDestOffset(from, to);
+  auto duration = offset.length() / speed; // for constant speed
+  piece->setInitialState();                // freeze current position as animation state
 
-  // getUserAny("position").has_value()
-  piece->setInitialState(); // freeze current position as animation state
+  Animation* anim = m_sceneMngr->createAnimation(from + to, duration);
   auto* track = anim->createNodeTrack(0, piece);
 
-  track->createNodeKeyFrame(0)->setTranslate(Vector3(0, 0, 0));        // start
-  track->createNodeKeyFrame(duration)->setTranslate(Vector3(2, 0, 0)); // end
+  track->createNodeKeyFrame(0)->setTranslate(Vector3(0, 0, 0)); // start
+  track->createNodeKeyFrame(duration)->setTranslate(offset);    // end
 
   auto* animState = m_sceneMngr->createAnimationState(anim->getName());
   animState->setEnabled(true);
   animState->setLoop(false);
   // store a pointer reference to the new state (owned by SceneManager)
   m_animations.push_back(animState);
+
+  // handle a captured piece (already piece at dest cell)
+  if (m_positions.contains(to)) {
+    auto captured = m_positions.extract(to).mapped(); // pops from the mapping
+    Vector3 exitOffset = sidelines - captured->getPosition();
+    exitOffset.y = 0;                                      // only move in xz plane
+    auto exitDuration = exitOffset.length() / (speed * 2); // constant speed
+    auto endTime = duration + exitDuration;
+    captured->setInitialState();
+
+    Animation* exitAnim = m_sceneMngr->createAnimation(to + "captured", endTime);
+    auto* exitTrack = exitAnim->createNodeTrack(0, captured);
+
+    exitTrack->createNodeKeyFrame(duration)->setTranslate(Vector3(0, 0, 0));
+    // wait until first animation complete
+    exitTrack->createNodeKeyFrame(duration + exitDuration / 2)->setTranslate(Vector3(exitOffset.x / 2, 3, exitOffset.y / 2));
+    // wait until first animation complete
+    exitTrack->createNodeKeyFrame(endTime)->setTranslate(exitOffset); // move to side line
+
+    auto* exitState = m_sceneMngr->createAnimationState(exitAnim->getName());
+    exitState->setEnabled(true);
+    exitState->setLoop(false);
+    // store a pointer reference to the new state (owned by SceneManager)
+    m_animations.push_back(exitState);
+
+    sidelines.x -= 1;
+  }
+
+  // save the new piece position now (visually only true after animation finishes)
+  m_positions.insert_or_assign(to, piece);
 }
 
 // InputLisener override
@@ -418,4 +457,13 @@ bool App::keyPressed(const OgreBites::KeyboardEvent& evt) {
   }
 
   return false;
+}
+
+inline Ogre::Vector3 chess3d::calcDestOffset(const std::string& from, const std::string& to) {
+  // from/to are chess positions e.g. a1, c8, h4, etc.
+  auto colOffset = to[0] - from[0];
+  auto rowOffset = to[1] - from[1];
+  // this exploits the fact that I ensured the chess cells were unit length
+  // in the mode. e.g. 1 cell is 1x1 in size. So distance between cells is easy.
+  return Ogre::Vector3(rowOffset, 0, colOffset);
 }

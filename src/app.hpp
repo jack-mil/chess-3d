@@ -13,6 +13,8 @@ namespace OgreBites { class CameraMan; }
 namespace chess3d {
 class Overlay; // forward declaration
 
+inline Ogre::Vector3 calcDestOffset(const std::string& from, const std::string& to);
+
 class App
     : public OgreBites::ApplicationContext,
       public OgreBites::InputListener,
