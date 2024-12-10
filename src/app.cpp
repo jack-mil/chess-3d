@@ -1,34 +1,3 @@
-// https://github.com/OGRECave/ogre/blob/master/Samples/Tutorials/BasicTutorial2.cpp
-// With addition from the python example @
-// https://github.com/OGRECave/ogre/blob/v1.11.1/Samples/Python/bites_sample.py#L23
-
-/* Controls:
-
-    LMB: Orbit Camera
-    RMB: Pan Camera
-
-    F: Toggle frame rate stats on/off
-    G: Toggle advanced frame stats on/off
-    P Toggle profiler window on/ off
-    R: Render mode
-        Wireframe
-        Points
-        Solid
-    T: Cycle texture filtering
-        Bilinear
-        Trilinear
-        Anisotropic(8)
-        None
-    F2: RTSS: Set the main viewport material scheme to default material manager scheme.
-    F3: RTSS: Toggle default shader generator lighting model from per vertex to per pixel.
-    F4: RTSS: Switch vertex shader outputs compaction policy.
-    F5: Reload all textures
-    F6: Take a screenshot
-
-
-*/
-
-// #include <exception>
 #include <iostream>
 
 #include "OgreAdvancedRenderControls.h"
@@ -55,10 +24,7 @@ App::App()
 }
 
 // for some reason this is required
-App::~App() {
-  //   std::cout << "Trying destory\n";
-  //   std::cout << "Destructed\n";
-}
+App::~App() { }
 
 void App::exec() {
   this->initApp();
