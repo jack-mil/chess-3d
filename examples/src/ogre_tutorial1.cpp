@@ -3,7 +3,7 @@
 // of this distribution and at https://www.ogre3d.org/licensing.
 // SPDX-License-Identifier: MIT
 
-// https://github.com/OGRECave/ogre/blob/master/Samples/Tutorials/BasicTutorial1.cpp
+// From: https://github.com/OGRECave/ogre/blob/master/Samples/Tutorials/BasicTutorial1.cpp
 
 
 //! [fullsource]

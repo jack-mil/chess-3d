@@ -1,6 +1,6 @@
 # [Chess 3D](https://github.com/jack-mil/chess-3d)
 
-Quick and dirty 3D scene rendering and `stockfish` chess engine integration for a required course project.
+Quick and dirty 3D scene rendering with `stockfish` chess engine integration for a required course project.
 
 ### Controls 
     - LMB: Orbit Camera
