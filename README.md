@@ -29,8 +29,8 @@ The CMakePresets.json contains options specific to my machine and toolchain (Nin
 - Similar Dear ImGui example from: [MPV Debug plugin](https://github.com/tsl0922/mpv-debug-plugin).
 - ImGui color theme from: [Basic electrical simulation software (BESS)](https://github.com/shivang51/bess/blob/main/Bess/src/settings/themes.cpp)
 
-![screenshot_1](/images/2024-12-05%2022-32-00.mkv-00:00:26.533.png)
+![screenshot_1](/images/screenshot_1.png)
 
-![screenshot_2](images/2024-12-05%2022-32-00.mkv-00:01:35.267.png)
+![screenshot_2](images/screenshot_2.png)
 
-![screenshot_3](images/2024-12-05%2022-32-00.mkv-00:02:53.767.png)
+![screenshot_3](images/screenshot_3.png)
